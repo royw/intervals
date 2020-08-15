@@ -1,0 +1,8 @@
+include *.rst
+include *.txt
+include MANIFEST.in
+recursive-include intervals *.txt
+recursive-include intervals *.js
+recursive-include intervals *.html
+recursive-include intervals *.css
+recursive-include tests *
