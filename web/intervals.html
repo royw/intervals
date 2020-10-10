@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Fretboard Intervals</title>
+    <style type="text/css">
+    </style>
+</head>
+    <head>
+        <title>Fretboard Intervals</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Language" content="English"/>
+        <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+        <script src="header.js"></script>
+        <script src="intervals.js"></script>
+        <script src="keys.js"></script>
+        <script src="modes.js"></script>
+        <script src="tunings.js"></script>
+        <script>
+
+            function addHeader(header_data) {
+                var header_elem = document.getElementById("header");
+
+                var img_elem = document.createElement("img");
+                for (var attr in header_data["image"]) {
+                    if (header_data["image"].hasOwnProperty(attr)) {
+                        img_elem.setAttribute(attr, header_data["image"][attr]);
+                    }
+                }
+                header_elem.appendChild(img_elem);
+
+                var h1_elem = document.createElement("h1");
+                h1_elem.innerHTML = "<a href=\"#\">" + header_data["title"] + "</a>";
+                header_elem.appendChild(h1_elem);
+
+                var h2_elem = document.createElement("h2");
+                h2_elem.innerHTML = header_data["caption"];
+                header_elem.appendChild(h2_elem);
+            }
+
+            function addTitle(title) {
+                var title_elem = document.createElement("title");
+                title_elem.innerHTML = title;
+                document.getElementsByTagName("head")[0].appendChild(title_elem);
+            }
+
+            /*
+             * On load, set the .section states from localStorage.
+             */
+            window.onload = function () {
+                addTitle(header_data["title"]);
+                addHeader(header_data);
+                addMenu(menu_data);
+                addFretboard();
+            };
+
+        </script>
+    </head>
+
+    <body>
+        <div id="wrap">
+            <div id="header"></div>
+            <div id="menu"></div>
+            <div id="menubottom"></div>
+            <div id="content">
+                <!--
+
+                When adding an .section division, increment the id.
+                Once an id is assigned to an .section division, do not change it.
+
+                It's ok to change the order of the .section divisions.  The order will be displayed order for
+                the opened and closed groups.
+
+                -->
+            </div>
+
+            <div id="footer">
+                <p>
+                    Click headings to show/hide sections.
+                </p>
+                <p>
+                    Requires recent HTML5 browser with javascript enabled.  Mobile and tablet ready.
+                </p>
+            </div>
+        </div>
+    </body>
+
+</html>

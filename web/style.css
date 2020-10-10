@@ -1,0 +1,275 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 17px;
+    background: darkseagreen; /* For browsers that do not support gradients */
+}
+
+a {
+    text-decoration: none;
+    color: #336699;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #111;
+}
+
+#wrap {
+    margin: 0 auto;
+    width: auto;
+}
+
+#title {
+    text-align: center;
+    font-size: 14pt;
+    color: #000099;
+    margin-bottom: 5px;
+}
+#fretboardInfo {
+    font-size: 14pt;
+    color: #999999;
+}
+
+#header {
+    height: 90px;
+    background: darkseagreen; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(darkslategrey, darkseagreen); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(darkslategrey, darkseagreen); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(darkslategrey, darkseagreen); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(darkslategrey, darkseagreen); /* Standard syntax */
+}
+
+#header img {
+    float: right;
+    padding-right: 0;
+}
+
+#header h1 {
+    font-size: 25px;
+    letter-spacing: -1px;
+    padding: 25px 0 0 20px;
+    color: #fff;
+}
+
+#header h1 a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 100;
+    letter-spacing: -2px;
+}
+
+#header h1 a:hover {
+    color: #111;
+}
+
+#header h2 {
+    font-size: 18px;
+    color: darkblue;
+    padding: 3px 0 0 20px;
+    letter-spacing: -1px;
+    font-weight: 100;
+}
+
+#menu {
+    height: 30px;
+    line-height: 30px;
+    background: darkseagreen; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(darkslategrey, darkseagreen); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(darkslategrey, darkseagreen); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(darkslategrey, darkseagreen); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(darkslategrey, darkseagreen); /* Standard syntax */
+}
+
+#menu ul {
+    list-style-type: none;
+    padding-left: 30px;
+}
+
+#menu ul li {
+    display: block;
+    float: left;
+}
+
+#menu ul li a {
+    padding: 0 20px 0 0;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+#menu ul li a:hover {
+    color: #aaa;
+    text-decoration: none;
+}
+
+#menubottom {
+    display: none;
+}
+
+#content {
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: inline-flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    background: darkseagreen; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(darkslategrey, darkseagreen); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(darkslategrey, darkseagreen); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(darkslategrey, darkseagreen); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(darkslategrey, darkseagreen); /* Standard syntax */
+}
+
+#content label {
+    font-size: 18px;
+    font-weight: 100;
+    padding-left: 5px;
+    height: 26px;
+    line-height: 26px;
+    background: dodgerblue;
+}
+
+#content .section {
+    display: inline-block;
+    padding: 5px;
+    text-align: left;
+    background: antiquewhite;
+    margin: 5px;
+    border-radius: 10px;
+    font-size: 16px;
+    vertical-align: bottom;
+    box-shadow: 5px 5px 3px #2e2e2e;
+}
+
+#content .section label {
+    border: solid cadetblue;
+    border-radius: 7px;
+    padding-right: 5px;
+}
+
+#content .section h3 {
+    font-size: 16px;
+    color: black;
+    padding: 3px 0 0 0;
+    font-weight: 200;
+    font-style: italic;
+}
+
+#content .section ul {
+    list-style-type: none;
+}
+
+#content .section ul li {
+    font-style: italic;
+}
+
+.hr {
+    font-style: italic;
+    border-top: solid;
+    border-color: darkolivegreen;
+    margin-top: 5px;
+}
+
+.container {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-left: 5%;
+}
+
+.left {
+    order: 1;
+    flex: 0 1;
+    text-align: left;
+    margin: auto;
+}
+
+.center {
+    order: 2;
+    flex: 0 1 ;
+    text-align: center;
+}
+
+.right {
+    order: 3;
+    flex: 1 1;
+    text-align: right;
+    margin: auto;
+}
+
+#content .section a {
+    padding-right: 5px;
+    font-weight: bold;
+    font-style: normal;
+}
+
+#content .section a img {
+    width: 140px;
+    height: auto;
+    display: block;
+}
+
+.collapse {
+    cursor: pointer;
+    display: block;
+}
+
+.collapse + input {
+    display: none; /* hide the checkboxes */
+}
+
+.collapse + input:not(:checked) + div {
+    display: none;
+}
+
+.collapse + input:checked + div {
+    display: block;
+}
+
+.metrics ul {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+.metric_image ul li {
+    display: block;
+    float: left;
+}
+
+.metric_image {
+    width: 75%;
+    text-align: center;
+}
+
+.metric_image img {
+    width: 140px;
+    height: auto;
+}
+
+.metric_image a {
+    display: block;
+    margin-top: 5%;
+    font-weight: bold;
+}
+
+#footer {
+    /* display: none; */
+    background: darkseagreen; /* For browsers that do not support gradients */
+    color: dimgrey;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 100;
+}
