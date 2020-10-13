@@ -6,7 +6,7 @@ The Intervals application.
 from sys import stdout
 
 from fullmonty.graceful_interrupt_handler import GracefulInterruptHandler
-from fullmonty.simple_logger import Logger, info, error, FileLogger, debug
+from fullmonty.simple_logger import Logger, FileLogger
 from intervals.intervals import Intervals
 
 __docformat__ = 'restructuredtext en'

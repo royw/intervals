@@ -109,6 +109,21 @@ a:hover {
     text-decoration: none;
 }
 
+#menu ul li div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 15px;
+}
+
+#menu ul li div label {
+    padding-right: 5px;
+}
+
+#menu ul li div select {
+    padding-left: 5px;
+}
+
 #menubottom {
     display: none;
 }
@@ -123,11 +138,13 @@ a:hover {
     flex-wrap: wrap;
     align-items: flex-start;
 
-    background: darkseagreen; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(darkslategrey, darkseagreen); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(darkslategrey, darkseagreen); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(darkslategrey, darkseagreen); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(darkslategrey, darkseagreen); /* Standard syntax */
+    background: #999999;
+
+    /*background: darkseagreen; !* For browsers that do not support gradients *!*/
+    /*background: -webkit-linear-gradient(darkslategrey, darkseagreen); !* For Safari 5.1 to 6.0 *!*/
+    /*background: -o-linear-gradient(darkslategrey, darkseagreen); !* For Opera 11.1 to 12.0 *!*/
+    /*background: -moz-linear-gradient(darkslategrey, darkseagreen); !* For Firefox 3.6 to 15 *!*/
+    /*background: linear-gradient(darkslategrey, darkseagreen); !* Standard syntax *!*/
 }
 
 #content label {

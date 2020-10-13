@@ -2,6 +2,8 @@
 """
 IntervalsSettings adds application specific information to the generic ApplicationSettings class.
 """
+import re
+
 from fullmonty.application_settings import ApplicationSettings
 
 __docformat__ = 'restructuredtext en'
@@ -71,7 +73,7 @@ class IntervalsSettings(ApplicationSettings):
                                                     description=self._help['parameters_group'])
         parameter_group.add_argument('-k', '--key', dest='key', default=self.DEFAULT_KEY, type=str, metavar='CHAR',
                                      help=self._help['key'])
-        parameter_group.add_argument('-t', '--tuning', dest='tuning', default=self.DEFAULT_TUNING, type=str,
+        parameter_group.add_argument('-t', '--tuning', dest='tuning_string', default=self.DEFAULT_TUNING, type=str,
                                      metavar='STRING', help=self._help['tuning'])
         parameter_group.add_argument('-f', '--frets', dest='frets', default=self.DEFAULT_FRETS, type=str, metavar='INT',
                                      help=self._help['frets'])
@@ -85,4 +87,5 @@ class IntervalsSettings(ApplicationSettings):
         :return: the error message if any
         :rtype: str or None
         """
+        settings.tuning = re.split(r'[A-Ga-g]', settings.tuning_string)
         return None

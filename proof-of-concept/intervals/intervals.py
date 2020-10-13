@@ -93,7 +93,12 @@ class Intervals(object):
     for k, v in NOTES_SEMITONES.items():
         SEMITONES_NOTES[v].add(k)
 
-    def __init__(self, key, tuning, frets):
+    def __init__(self, key: str, tuning: List[str], frets:int):
+        """
+        :param key: The root note for the intervals
+        :param tuning: list of note names for the open strings
+        :param frets: the number of frets to display
+        """
         self.minor_key = 'm' in key
         self.major_key = 'm' not in key
         self.key = key[0]

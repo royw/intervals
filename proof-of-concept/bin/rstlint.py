@@ -167,7 +167,7 @@ Options:  -v       verbose (print all checked file names)
             ignore.append(abspath(val))
 
     if len(args) == 0:
-        path = '.'
+        path = ''
     elif len(args) == 1:
         path = args[0]
     else:

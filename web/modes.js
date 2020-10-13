@@ -1,4 +1,4 @@
-var modes_data = {
+var modes = {
     "Acoustic scale": {
         "intervals": ["1", "2", "3", "♯4", "5", "6", "♭7"],
         "steps": ["W", "W", "W", "H", "W", "H", "W"]
@@ -9,7 +9,7 @@ var modes_data = {
     },
 
     "Algerian scale": {
-        "intervals": ["1", "2" "♭3", "♯4", "5", "♭6", "7"],
+        "intervals": ["1", "2", "♭3", "♯4", "5", "♭6", "7"],
         "steps": ["W", "H", "3H", "H", "H", "3H", "H", "W", "H", "W"]
     },
     "Altered scale or Super Locrian scale": {
@@ -140,4 +140,14 @@ var modes_data = {
         "intervals": ["1", "♭2", "♭3", "4", "5", "♭6", "7"],
         "steps": ["H", "W", "W", "W", "H", "3H", "H"]
     }
-}
+};
+
+var modes_data = [];
+for (var k in modes) {
+    var value = k;
+    value += " - "
+    value += modes[k]["intervals"]
+    value += " - "
+    value += modes[k]["steps"]
+    modes_data.push(value);
+};

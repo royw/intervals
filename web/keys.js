@@ -1,1 +1,1 @@
-var modes_data = ["A", "B", "C", "D", "E", "F", "G"]
+var keys_data = ["A", "B", "C", "D", "E", "F", "G"];

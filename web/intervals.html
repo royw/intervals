@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Fretboard Intervals</title>
-    <style type="text/css">
-    </style>
-</head>
     <head>
-        <title>Fretboard Intervals</title>
         <meta charset="UTF-8">
         <meta http-equiv="Content-Language" content="English"/>
         <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
@@ -15,7 +9,97 @@
         <script src="keys.js"></script>
         <script src="modes.js"></script>
         <script src="tunings.js"></script>
+        <script src="menu.js"></script>
         <script>
+
+            function drawFretBoard(canvas_elem) {
+                // Box width
+                var bw = window.innerWidth * .9;
+                // Box height
+                var bh = window.innerHeight * 0.9;
+                // Padding
+                var p = 0;
+
+                var n_frets = 24;
+                var n_strings = 6;
+
+                x_increment = bw / n_frets;
+                y_increment = bh / n_strings;
+
+                if (y_increment > x_increment) {
+                    y_increment = x_increment;
+                    bh = y_increment * n_strings;
+                }
+
+                canvas_elem.width = bw + 1;
+                canvas_elem.height = bh + 1;
+
+                // var canvas = document.getElementById("canvas");
+                var context = canvas_elem.getContext("2d");
+
+                // vertical lines
+                for (var x = 0; x <= bw; x += x_increment) {
+                    context.moveTo(0.5 + x + p, p);
+                    context.lineTo(0.5 + x + p, bh + p);
+                }
+
+                // horizontal lines
+                for (var y = 0; y <= bh; y += y_increment) {
+                    context.moveTo(p, 0.5 + y + p);
+                    context.lineTo(bw + p, 0.5 + y + p);
+                }
+                context.strokeStyle = "black";
+                context.stroke();
+            }
+
+            function addFretBoard() {
+                var content_elem = document.getElementById("content")
+                var canvas_elem = document.createElement("canvas")
+                content_elem.appendChild(canvas_elem)
+                // <canvas id="canvas" width="420px" height="420px" style="background: #fff; margin:20px"></canvas>
+
+                drawFretBoard(canvas_elem);
+            }
+
+            /*
+             * Each menu item is a drop down select box
+             *
+             *
+             */
+            function addMenu(menu_data) {
+                var menu_elem = document.getElementById("menu");
+                var form_elem = document.createElement("form");
+                var list_elem = document.createElement("ul");
+                for (var index in menu_data) {
+                    var item = menu_data[index];
+                    var label = item["label"];
+                    var default_value = item["default"];
+                    var values = item["values"];
+
+                    var item_elem = document.createElement("li");
+
+                    var div_elem = document.createElement("div");
+                    var label_elem = document.createElement("label");
+                    label_elem.innerText = label;
+
+                    var select_elem = document.createElement("select");
+                    select_elem.name = label;
+                    for (var value in values) {
+                        var option_elem = document.createElement("option");
+                        option_elem.text = values[value];
+                        option_elem.value = values[value];
+                        select_elem.appendChild(option_elem);
+                    }
+
+                    div_elem.appendChild(label_elem)
+                    div_elem.appendChild(select_elem)
+
+                    item_elem.appendChild(div_elem);
+                    list_elem.appendChild(item_elem);
+                }
+                form_elem.appendChild(list_elem)
+                menu_elem.appendChild(form_elem);
+            }
 
             function addHeader(header_data) {
                 var header_elem = document.getElementById("header");
@@ -50,7 +134,7 @@
                 addTitle(header_data["title"]);
                 addHeader(header_data);
                 addMenu(menu_data);
-                addFretboard();
+                addFretBoard();
             };
 
         </script>
@@ -61,17 +145,7 @@
             <div id="header"></div>
             <div id="menu"></div>
             <div id="menubottom"></div>
-            <div id="content">
-                <!--
-
-                When adding an .section division, increment the id.
-                Once an id is assigned to an .section division, do not change it.
-
-                It's ok to change the order of the .section divisions.  The order will be displayed order for
-                the opened and closed groups.
-
-                -->
-            </div>
+            <div id="content"></div>
 
             <div id="footer">
                 <p>
