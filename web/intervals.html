@@ -13,51 +13,57 @@
         <script>
 
             function drawFretBoard(canvas_elem) {
-                // Box width
-                var bw = window.innerWidth * .9;
-                // Box height
-                var bh = window.innerHeight * 0.9;
-                // Padding
-                var p = 0;
+                let canvasWidth = canvas_elem.width;
+                let canvasHeight = canvas_elem.height;
 
-                var n_frets = 24;
-                var n_strings = 6;
+                const n_frets = 24;
+                const n_strings = 6;
 
-                x_increment = bw / n_frets;
-                y_increment = bh / n_strings;
+                let x_increment = canvasWidth / (n_frets + 2);
+                let y_increment = canvasHeight / (n_strings + 1);
 
                 if (y_increment > x_increment) {
                     y_increment = x_increment;
-                    bh = y_increment * n_strings;
+                    canvasHeight = y_increment * (n_strings + 1);
                 }
 
-                canvas_elem.width = bw + 1;
-                canvas_elem.height = bh + 1;
+                if (x_increment > y_increment) {
+                    x_increment = y_increment;
+                    canvasWidth = x_increment * (n_frets + 2);
+                }
 
                 // var canvas = document.getElementById("canvas");
-                var context = canvas_elem.getContext("2d");
+                let context = canvas_elem.getContext("2d");
+                context.font = "20px Arial"
 
                 // vertical lines
-                for (var x = 0; x <= bw; x += x_increment) {
-                    context.moveTo(0.5 + x + p, p);
-                    context.lineTo(0.5 + x + p, bh + p);
+                let fret_number = 0
+                for (let x = x_increment; x < canvasWidth; x += x_increment) {
+                    context.moveTo(0.5 + x, 0);
+                    context.lineTo(0.5 + x, canvasHeight - y_increment);
+                    if (fret_number > 0) {
+                        context.textAlign = "center";
+                        context.fillText(fret_number.toString(), x, canvasHeight - y_increment / 2);
+                    }
+                    fret_number += 1
                 }
 
                 // horizontal lines
-                for (var y = 0; y <= bh; y += y_increment) {
-                    context.moveTo(p, 0.5 + y + p);
-                    context.lineTo(bw + p, 0.5 + y + p);
+                for (let y = 0; y < canvasHeight; y += y_increment) {
+                    context.moveTo(x_increment, 0.5 + y);
+                    context.lineTo(canvasWidth - x_increment, 0.5 + y);
                 }
                 context.strokeStyle = "black";
                 context.stroke();
             }
 
             function addFretBoard() {
-                var content_elem = document.getElementById("content")
-                var canvas_elem = document.createElement("canvas")
-                content_elem.appendChild(canvas_elem)
-                // <canvas id="canvas" width="420px" height="420px" style="background: #fff; margin:20px"></canvas>
-
+                let content_elem = document.getElementById("content");
+                let canvas_elem = document.createElement("canvas");
+                canvas_elem.setAttribute("id", "canvas");
+                canvas_elem.width = window.innerWidth
+                canvas_elem.height = window.innerHeight
+                content_elem.appendChild(canvas_elem);
                 drawFretBoard(canvas_elem);
             }
 
@@ -67,62 +73,66 @@
              *
              */
             function addMenu(menu_data) {
-                var menu_elem = document.getElementById("menu");
-                var form_elem = document.createElement("form");
-                var list_elem = document.createElement("ul");
-                for (var index in menu_data) {
-                    var item = menu_data[index];
-                    var label = item["label"];
-                    var default_value = item["default"];
-                    var values = item["values"];
+                let menu_elem = document.getElementById("menu");
+                let form_elem = document.createElement("form");
+                let list_elem = document.createElement("ul");
+                for (let index in menu_data) {
+                    if (menu_data.hasOwnProperty(index)) {
+                        let item = menu_data[index];
+                        let label = item["label"];
+                        let default_value = item["default"];
+                        let values = item["values"];
 
-                    var item_elem = document.createElement("li");
+                        let item_elem = document.createElement("li");
 
-                    var div_elem = document.createElement("div");
-                    var label_elem = document.createElement("label");
-                    label_elem.innerText = label;
+                        let div_elem = document.createElement("div");
+                        let label_elem = document.createElement("label");
+                        label_elem.innerText = label;
 
-                    var select_elem = document.createElement("select");
-                    select_elem.name = label;
-                    for (var value in values) {
-                        var option_elem = document.createElement("option");
-                        option_elem.text = values[value];
-                        option_elem.value = values[value];
-                        select_elem.appendChild(option_elem);
+                        let select_elem = document.createElement("select");
+                        select_elem.name = label;
+                        for (let value in values) {
+                            if (values.hasOwnProperty(value)) {
+                                let option_elem = document.createElement("option");
+                                option_elem.text = values[value];
+                                option_elem.value = values[value];
+                                select_elem.appendChild(option_elem);
+                            }
+                        }
+
+                        div_elem.appendChild(label_elem)
+                        div_elem.appendChild(select_elem)
+
+                        item_elem.appendChild(div_elem);
+                        list_elem.appendChild(item_elem);
                     }
-
-                    div_elem.appendChild(label_elem)
-                    div_elem.appendChild(select_elem)
-
-                    item_elem.appendChild(div_elem);
-                    list_elem.appendChild(item_elem);
                 }
                 form_elem.appendChild(list_elem)
                 menu_elem.appendChild(form_elem);
             }
 
             function addHeader(header_data) {
-                var header_elem = document.getElementById("header");
+                let header_elem = document.getElementById("header");
 
-                var img_elem = document.createElement("img");
-                for (var attr in header_data["image"]) {
+                let img_elem = document.createElement("img");
+                for (let attr in header_data["image"]) {
                     if (header_data["image"].hasOwnProperty(attr)) {
                         img_elem.setAttribute(attr, header_data["image"][attr]);
                     }
                 }
                 header_elem.appendChild(img_elem);
 
-                var h1_elem = document.createElement("h1");
+                let h1_elem = document.createElement("h1");
                 h1_elem.innerHTML = "<a href=\"#\">" + header_data["title"] + "</a>";
                 header_elem.appendChild(h1_elem);
 
-                var h2_elem = document.createElement("h2");
+                let h2_elem = document.createElement("h2");
                 h2_elem.innerHTML = header_data["caption"];
                 header_elem.appendChild(h2_elem);
             }
 
             function addTitle(title) {
-                var title_elem = document.createElement("title");
+                let title_elem = document.createElement("title");
                 title_elem.innerHTML = title;
                 document.getElementsByTagName("head")[0].appendChild(title_elem);
             }
@@ -135,6 +145,24 @@
                 addHeader(header_data);
                 addMenu(menu_data);
                 addFretBoard();
+
+                let ro = new ResizeObserver( entries => {
+                    for (let entry of entries) {
+                        const cr = entry.contentRect;
+                        console.log('Element:', entry.target);
+                        console.log(`Element size: ${cr.width}px x ${cr.height}px`);
+                        console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+
+                        let canvas_elem = document.getElementById("canvas");
+                        canvas_elem.width = window.innerWidth;
+                        canvas_elem.height = window.innerHeight;
+                        drawFretBoard(canvas_elem);
+                    }
+                });
+
+                // Observe one or multiple elements
+                let wrap_elem = document.getElementById("wrap");
+                ro.observe(wrap_elem);
             };
 
         </script>
