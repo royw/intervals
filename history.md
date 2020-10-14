@@ -24,7 +24,7 @@ A0 B0 C1 D1 E1 F1 G1 A1 B1 C2 D2 ... A7 B7 C8
 
 With middle C (C4 on most instruments, can be C3, C4, or C5 on MIDI) 
 being 261.626 Hz in the common A440 pitch standard (naturally there 
-are other tuning standards).
+are other tuning [^2] standards).
 
 But alas, musicians weren't satisfied with 7 notes,
 so over time, settled on the natural base 12, i.e. 
@@ -45,7 +45,7 @@ phase of the moon,...
 To map 7 notes into twelve notes, the spacing is going to
 have some variance as you need 5 whole tones and 2
 half tones.  So how you arrange the whole and half
-tones is called a mode [^2] or scale.
+tones is called a mode [^3] or scale.
 
 The natural scale, is the white keys of an octave starting
 at C.  This gives a W-W-H-W-W-W-H tones for the C major scale
@@ -65,9 +65,9 @@ just starting on a D note.
    W-W-H-W-W-W-H
 
 An interval is a much abused term in music theory.  In music theory
-an interval [^3] is technically the difference in pitch between two sounds.
+an interval [^4] is technically the difference in pitch between two sounds.
 
-On a guitar an interval is typically the distance from the root note of
+On a guitar an interval [^5] is typically the distance from the root note of
 a scale.  We can number these distances starting with 1 being the root
 note, 2 being the second note in scale, etc.  So
 the C major scale, C-D-E-F-G-A-B-C, becomes 1-2-3-4-5-6-7-1
@@ -83,5 +83,8 @@ W-W-H-W-W-W-H.
 
 
 [^1]: https://musictheorytutoring.weebly.com/octave-identification.html#:~:text=The%20range%20of%20all%20possible,its%20name%20plus%20a%20number.
-[^2]: https://en.wikipedia.org/wiki/Mode_(music)
-[^3]: https://en.wikipedia.org/wiki/Interval_(music)
+[^2]: Music theory loves to have multiple meanings per word and multiple 
+words per meaning.  
+[^3]: https://en.wikipedia.org/wiki/Mode_(music)
+[^4]: https://en.wikipedia.org/wiki/Interval_(music)
+[^5]: https://bestbluesguitarlessonsonline.com/guitar-intervals
