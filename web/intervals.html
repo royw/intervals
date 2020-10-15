@@ -12,57 +12,100 @@
         <script src="menu.js"></script>
         <script>
 
-            function drawFretBoard(canvas_elem) {
-                let canvasWidth = canvas_elem.width;
-                let canvasHeight = canvas_elem.height;
+            function numberOfFrets() {
+                return 24;
+            }
 
-                const n_frets = 24;
-                const n_strings = 6;
+            function numberOfStrings() {
+                return 6;
+            }
 
-                let x_increment = canvasWidth / (n_frets + 2);
-                let y_increment = canvasHeight / (n_strings + 1);
+            function fretBoardSize(canvas_elem) {
+                let canvasWidth = window.innerWidth;
+                let canvasHeight = window.innerHeight;
+
+                let x_increment = canvasWidth / (numberOfFrets() + 3);
+                let y_increment = canvasHeight / (numberOfStrings() + 1);
 
                 if (y_increment > x_increment) {
                     y_increment = x_increment;
-                    canvasHeight = y_increment * (n_strings + 1);
+                    canvasHeight = y_increment * (numberOfStrings() + 1);
                 }
 
                 if (x_increment > y_increment) {
                     x_increment = y_increment;
-                    canvasWidth = x_increment * (n_frets + 2);
+                    canvasWidth = x_increment * (numberOfFrets() + 2);
                 }
+
+                return [canvasWidth - (2 * x_increment), canvasHeight - y_increment, x_increment, y_increment]
+            }
+
+            function drawFretBoard(canvas_elem) {
+                let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+                let canvasWidth = fretBoardWidth + (2 * x_increment);
+                let canvasHeight = fretBoardHeight + y_increment;
+                let fretBoardXOrigin = x_increment;
+                let fretBoardYOrigin = 0;
 
                 // var canvas = document.getElementById("canvas");
                 let context = canvas_elem.getContext("2d");
                 context.font = "20px Arial"
 
+                // draw fretboard outline
+                context.beginPath();
+                context.fillStyle = "#6F4E37";
+                context.lineWidth = 1;
+                context.fillRect(fretBoardXOrigin, fretBoardYOrigin,
+                    fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
+                context.rect(fretBoardXOrigin, fretBoardYOrigin,
+                    fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
+                context.strokeStyle = "black";
+                context.stroke();
+
                 // vertical lines
                 let fret_number = 0
-                for (let x = x_increment; x < canvasWidth; x += x_increment) {
-                    context.moveTo(0.5 + x, 0);
-                    context.lineTo(0.5 + x, canvasHeight - y_increment);
-                    if (fret_number > 0) {
+                for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
+                    let x = (fret * x_increment) + fretBoardXOrigin;
+                    context.beginPath();
+                    context.moveTo(x, fretBoardYOrigin);
+                    context.lineTo(x, fretBoardYOrigin + fretBoardHeight)
+                    context.strokeStyle = "#BCC6CC";
+                    context.lineWidth = 3;
+                    context.stroke();
+                    if (fret > 0) {
+                        context.beginPath();
                         context.textAlign = "center";
-                        context.fillText(fret_number.toString(), x, canvasHeight - y_increment / 2);
+                        context.fillStyle = "black";
+                        context.fillText(fret.toString(), x, fretBoardYOrigin + fretBoardHeight + (y_increment / 2));
+                        context.stroke();
                     }
-                    fret_number += 1
                 }
 
                 // horizontal lines
-                for (let y = 0; y < canvasHeight; y += y_increment) {
-                    context.moveTo(x_increment, 0.5 + y);
-                    context.lineTo(canvasWidth - x_increment, 0.5 + y);
+                for (let string = 1; string <= numberOfStrings(); string +=1) {
+                    let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin;
+                    context.beginPath();
+                    context.lineWidth = 2;
+                    context.moveTo(fretBoardXOrigin, y);
+                    context.lineTo(fretBoardXOrigin + fretBoardWidth, y);
+                    context.strokeStyle = "gold";
+                    context.stroke();
                 }
-                context.strokeStyle = "black";
-                context.stroke();
+
             }
 
             function addFretBoard() {
                 let content_elem = document.getElementById("content");
                 let canvas_elem = document.createElement("canvas");
                 canvas_elem.setAttribute("id", "canvas");
-                canvas_elem.width = window.innerWidth
-                canvas_elem.height = window.innerHeight
+
+                let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+                canvas_elem.width = fretBoardWidth + (2 * x_increment);
+                canvas_elem.height = fretBoardHeight + y_increment;
+
+                content_elem.clientWidth = canvas_elem.width;
+                content_elem.clientHeight = canvas_elem.height;
+
                 content_elem.appendChild(canvas_elem);
                 drawFretBoard(canvas_elem);
             }
