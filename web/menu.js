@@ -1,7 +1,7 @@
 var menu_data = [
     {
         "label": "Number of frets",
-        "default": 12,
+        "default": 24,
         "values": [12, 24]
     },
     {
@@ -20,13 +20,13 @@ var menu_data = [
         "values": keys_data
     },
     {
-        "label": "Mode",
-        "default": "Ionian mode or major scale",
-        "values": modes_data
-    },
-    {
         "label": "Interval",
         "default": "I",
         "values": interval_data
+    },
+    {
+        "label": "Mode",
+        "default": "Ionian mode or major scale",
+        "values": modes_data
     }
 ];

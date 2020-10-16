@@ -1,232 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Language" content="English"/>
-        <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
-        <script src="header.js"></script>
-        <script src="intervals.js"></script>
-        <script src="keys.js"></script>
-        <script src="modes.js"></script>
-        <script src="tunings.js"></script>
-        <script src="menu.js"></script>
-        <script>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Language" content="English"/>
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
+    <script src="header.js"></script>
+    <script src="intervals.js"></script>
+    <script src="keys.js"></script>
+    <script src="modes.js"></script>
+    <script src="tunings.js"></script>
+    <script src="menu.js"></script>
+    <script>
 
-            function numberOfFrets() {
-                return 24;
+        let data_prefix = "fretboard.intervals.";
+
+        function numberOfFrets() {
+            let number_of_frets_elem = document.getElementById("Number of frets");
+            return parseInt(number_of_frets_elem.options[number_of_frets_elem.selectedIndex].text);
+        }
+
+        function numberOfStrings() {
+            let number_of_strings_elem = document.getElementById("Number of strings");
+            return parseInt(number_of_strings_elem.options[number_of_strings_elem.selectedIndex].text);
+        }
+
+        /*
+         * return an array of notes as strings
+         */
+        function tuning() {
+            let tuning_elem = document.getElementById("Tuning");
+            let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
+            let parts = tuning_str.split(" - ");
+            return parts[1].split(",");
+        }
+
+        function fretBoardSize(canvas_elem) {
+            let canvasWidth = window.innerWidth;
+            let canvasHeight = window.innerHeight;
+
+            let x_increment = canvasWidth / (numberOfFrets() + 3);
+            let y_increment = canvasHeight / (numberOfStrings() + 1);
+
+            if (y_increment > x_increment) {
+                y_increment = x_increment;
+                canvasHeight = y_increment * (numberOfStrings() + 1);
             }
 
-            function numberOfStrings() {
-                return 6;
+            if (x_increment > y_increment) {
+                x_increment = y_increment;
+                canvasWidth = x_increment * (numberOfFrets() + 2);
             }
 
-            function fretBoardSize(canvas_elem) {
-                let canvasWidth = window.innerWidth;
-                let canvasHeight = window.innerHeight;
+            return [canvasWidth - (2 * x_increment), canvasHeight - y_increment, x_increment, y_increment]
+        }
 
-                let x_increment = canvasWidth / (numberOfFrets() + 3);
-                let y_increment = canvasHeight / (numberOfStrings() + 1);
+        function drawFretBoard(canvas_elem) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            let fretBoardXOrigin = x_increment;
+            let fretBoardYOrigin = 0;
+            let tuning_notes = tuning();
 
-                if (y_increment > x_increment) {
-                    y_increment = x_increment;
-                    canvasHeight = y_increment * (numberOfStrings() + 1);
-                }
+            let context = canvas_elem.getContext("2d");
+            context.font = "20px Arial"
 
-                if (x_increment > y_increment) {
-                    x_increment = y_increment;
-                    canvasWidth = x_increment * (numberOfFrets() + 2);
-                }
+            // draw fretboard outline
+            context.beginPath();
+            context.fillStyle = "darkslategrey";
+            context.strokeStyle = "black";
+            context.lineWidth = 1;
+            context.fillRect(fretBoardXOrigin, fretBoardYOrigin,
+                fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
+            context.rect(fretBoardXOrigin, fretBoardYOrigin,
+                fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
+            context.stroke();
 
-                return [canvasWidth - (2 * x_increment), canvasHeight - y_increment, x_increment, y_increment]
-            }
-
-            function drawFretBoard(canvas_elem) {
-                let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
-                let fretBoardXOrigin = x_increment;
-                let fretBoardYOrigin = 0;
-
-                let context = canvas_elem.getContext("2d");
-                context.font = "20px Arial"
-
-                // draw fretboard outline
+            // vertical lines
+            let fret_number = 0
+            for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
+                let x = (fret * x_increment) + fretBoardXOrigin;
                 context.beginPath();
-                context.fillStyle = "darkslategrey";
-                context.strokeStyle = "black";
-                context.lineWidth = 1;
-                context.fillRect(fretBoardXOrigin, fretBoardYOrigin,
-                    fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
-                context.rect(fretBoardXOrigin, fretBoardYOrigin,
-                    fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
+                context.strokeStyle = "silver";
+                context.lineWidth = 3;
+                context.moveTo(x, fretBoardYOrigin);
+                context.lineTo(x, fretBoardYOrigin + fretBoardHeight)
                 context.stroke();
-
-                // vertical lines
-                let fret_number = 0
-                for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
-                    let x = (fret * x_increment) + fretBoardXOrigin;
+                if (fret > 0) {
                     context.beginPath();
-                    context.strokeStyle = "silver";
-                    context.lineWidth = 3;
-                    context.moveTo(x, fretBoardYOrigin);
-                    context.lineTo(x, fretBoardYOrigin + fretBoardHeight)
+                    context.textAlign = "center";
+                    context.fillStyle = "black";
+                    context.fillText(fret.toString(), x, fretBoardYOrigin + fretBoardHeight + (y_increment / 2));
                     context.stroke();
-                    if (fret > 0) {
-                        context.beginPath();
-                        context.textAlign = "center";
-                        context.fillStyle = "black";
-                        context.fillText(fret.toString(), x, fretBoardYOrigin + fretBoardHeight + (y_increment / 2));
-                        context.stroke();
-                    }
                 }
+            }
 
-                // horizontal lines
+            // horizontal lines
+            context.lineWidth = 2;
+            let index = numberOfStrings();
+            for (let string = 1; string <= numberOfStrings(); string += 1) {
+                let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin;
                 context.beginPath();
-                context.lineWidth = 2;
-                for (let string = 1; string <= numberOfStrings(); string +=1) {
-                    let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin;
-                    context.moveTo(fretBoardXOrigin, y);
-                    context.lineTo(fretBoardXOrigin + fretBoardWidth, y);
-                }
+                context.moveTo(fretBoardXOrigin, y);
+                context.lineTo(fretBoardXOrigin + fretBoardWidth, y);
                 context.strokeStyle = "gold";
                 context.stroke();
-
+                context.beginPath();
+                context.textAlign = "right";
+                context.fillStyle = "black";
+                context.textBaseline = "middle";
+                index -= 1;
+                context.fillText(tuning_notes[index], fretBoardXOrigin - 4, y);
+                context.stroke();
             }
 
-            function addFretBoard() {
-                let content_elem = document.getElementById("content");
-                let canvas_elem = document.createElement("canvas");
-                canvas_elem.setAttribute("id", "canvas");
+        }
 
-                let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
-                canvas_elem.width = fretBoardWidth + (2 * x_increment);
-                canvas_elem.height = fretBoardHeight + y_increment;
+        function addFretBoard() {
+            let content_elem = document.getElementById("content");
+            let canvas_elem = document.createElement("canvas");
+            canvas_elem.setAttribute("id", "canvas");
 
-                content_elem.clientWidth = canvas_elem.width;
-                content_elem.clientHeight = canvas_elem.height;
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            canvas_elem.width = fretBoardWidth + (2 * x_increment);
+            canvas_elem.height = fretBoardHeight + y_increment;
 
-                content_elem.appendChild(canvas_elem);
-                drawFretBoard(canvas_elem);
+            content_elem.clientWidth = canvas_elem.width;
+            content_elem.clientHeight = canvas_elem.height;
+
+            content_elem.appendChild(canvas_elem);
+            drawFretBoard(canvas_elem);
+        }
+
+        function selectOptionByValue(select_elem, value) {
+            for (let i = 0; i < select_elem.options.length; i++) {
+                if (select_elem.options[i].value == value) {
+                    select_elem.selectedIndex = i;
+                    break;
+                }
             }
+        }
 
-            /*
-             * Each menu item is a drop down select box
-             *
-             *
-             */
-            function addMenu(menu_data) {
-                let menu_elem = document.getElementById("menu");
-                let form_elem = document.createElement("form");
-                let list_elem = document.createElement("ul");
-                for (let index in menu_data) {
-                    if (menu_data.hasOwnProperty(index)) {
-                        let item = menu_data[index];
-                        let label = item["label"];
-                        let default_value = item["default"];
-                        let values = item["values"];
+        /*
+         * Each menu item is a drop down select box
+         *
+         *
+         */
+        function addMenu(menu_data) {
+            let menu_elem = document.getElementById("menu");
+            let form_elem = document.createElement("form");
+            let list_elem = document.createElement("ul");
+            for (let index in menu_data) {
+                if (menu_data.hasOwnProperty(index)) {
+                    let item = menu_data[index];
+                    let label = item["label"];
+                    let default_value;
+                    if (localStorage.hasOwnProperty(data_prefix + label)) {
+                        default_value = localStorage.getItem(data_prefix + label);
+                    } else {
+                        default_value = item["default"];
+                    }
+                    let values = item["values"];
 
-                        let item_elem = document.createElement("li");
+                    let item_elem = document.createElement("li");
 
-                        let div_elem = document.createElement("div");
-                        let label_elem = document.createElement("label");
-                        label_elem.innerText = label;
+                    let div_elem = document.createElement("div");
+                    let label_elem = document.createElement("label");
+                    label_elem.innerText = label;
 
-                        let select_elem = document.createElement("select");
-                        select_elem.name = label;
-                        for (let value in values) {
-                            if (values.hasOwnProperty(value)) {
-                                let option_elem = document.createElement("option");
-                                option_elem.text = values[value];
-                                option_elem.value = values[value];
-                                select_elem.appendChild(option_elem);
-                            }
+                    let select_elem = document.createElement("select");
+                    select_elem.name = label;
+                    select_elem.id = label;
+                    select_elem.addEventListener("change", redraw);
+                    for (let value in values) {
+                        if (values.hasOwnProperty(value)) {
+                            let option_elem = document.createElement("option");
+                            option_elem.text = values[value];
+                            option_elem.value = values[value];
+                            select_elem.appendChild(option_elem);
                         }
-
-                        div_elem.appendChild(label_elem)
-                        div_elem.appendChild(select_elem)
-
-                        item_elem.appendChild(div_elem);
-                        list_elem.appendChild(item_elem);
                     }
+                    selectOptionByValue(select_elem, default_value);
+
+                    div_elem.appendChild(label_elem)
+                    div_elem.appendChild(select_elem)
+
+                    item_elem.appendChild(div_elem);
+                    list_elem.appendChild(item_elem);
                 }
-                form_elem.appendChild(list_elem)
-                menu_elem.appendChild(form_elem);
             }
+            form_elem.appendChild(list_elem)
+            menu_elem.appendChild(form_elem);
+        }
 
-            function addHeader(header_data) {
-                let header_elem = document.getElementById("header");
+        function addHeader(header_data) {
+            let header_elem = document.getElementById("header");
 
-                let img_elem = document.createElement("img");
-                for (let attr in header_data["image"]) {
-                    if (header_data["image"].hasOwnProperty(attr)) {
-                        img_elem.setAttribute(attr, header_data["image"][attr]);
-                    }
+            let img_elem = document.createElement("img");
+            for (let attr in header_data["image"]) {
+                if (header_data["image"].hasOwnProperty(attr)) {
+                    img_elem.setAttribute(attr, header_data["image"][attr]);
                 }
-                header_elem.appendChild(img_elem);
-
-                let h1_elem = document.createElement("h1");
-                h1_elem.innerHTML = "<a href=\"#\">" + header_data["title"] + "</a>";
-                header_elem.appendChild(h1_elem);
-
-                let h2_elem = document.createElement("h2");
-                h2_elem.innerHTML = header_data["caption"];
-                header_elem.appendChild(h2_elem);
             }
+            header_elem.appendChild(img_elem);
 
-            function addTitle(title) {
-                let title_elem = document.createElement("title");
-                title_elem.innerHTML = title;
-                document.getElementsByTagName("head")[0].appendChild(title_elem);
+            let h1_elem = document.createElement("h1");
+            h1_elem.innerHTML = "<a href=\"#\">" + header_data["title"] + "</a>";
+            header_elem.appendChild(h1_elem);
+
+            let h2_elem = document.createElement("h2");
+            h2_elem.innerHTML = header_data["caption"];
+            header_elem.appendChild(h2_elem);
+        }
+
+        function addTitle(title) {
+            let title_elem = document.createElement("title");
+            title_elem.innerHTML = title;
+            document.getElementsByTagName("head")[0].appendChild(title_elem);
+        }
+
+        function redraw() {
+            let canvas_elem = document.getElementById("canvas");
+
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            canvas_elem.width = fretBoardWidth + (2 * x_increment);
+            canvas_elem.height = fretBoardHeight + y_increment;
+
+            drawFretBoard(canvas_elem);
+
+            /* save config to localstorage */
+            for (let index in menu_data) {
+                if (menu_data.hasOwnProperty(index)) {
+                    let item = menu_data[index];
+                    let label = item["label"];
+                    let elem = document.getElementById(label);
+                    let value = elem.options[elem.selectedIndex].text;
+                    localStorage.setItem(data_prefix + label, value);
+                }
             }
+        }
 
-            /*
-             * On load, set the .section states from localStorage.
-             */
-            window.onload = function () {
-                addTitle(header_data["title"]);
-                addHeader(header_data);
-                addMenu(menu_data);
-                addFretBoard();
+        /*
+         * On load, set the .section states from localStorage.
+         */
+        window.onload = function () {
+            addTitle(header_data["title"]);
+            addHeader(header_data);
+            addMenu(menu_data);
+            addFretBoard();
 
-                let ro = new ResizeObserver( entries => {
-                    for (let entry of entries) {
-                        const cr = entry.contentRect;
-                        console.log('Element:', entry.target);
-                        console.log(`Element size: ${cr.width}px x ${cr.height}px`);
-                        console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+            let ro = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    redraw()
+                }
+            });
 
-                        let canvas_elem = document.getElementById("canvas");
+            // Observe one or multiple elements
+            let wrap_elem = document.getElementById("wrap");
+            ro.observe(wrap_elem);
+        };
 
-                        let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
-                        canvas_elem.width = fretBoardWidth + (2 * x_increment);
-                        canvas_elem.height = fretBoardHeight + y_increment;
+    </script>
+</head>
 
-                        drawFretBoard(canvas_elem);
-                    }
-                });
+<body>
+<div id="wrap">
+    <div id="header"></div>
+    <div id="menu"></div>
+    <div id="menubottom"></div>
+    <div id="content"></div>
 
-                // Observe one or multiple elements
-                let wrap_elem = document.getElementById("wrap");
-                ro.observe(wrap_elem);
-            };
-
-        </script>
-    </head>
-
-    <body>
-        <div id="wrap">
-            <div id="header"></div>
-            <div id="menu"></div>
-            <div id="menubottom"></div>
-            <div id="content"></div>
-
-            <div id="footer">
-                <p>
-                    Click headings to show/hide sections.
-                </p>
-                <p>
-                    Requires recent HTML5 browser with javascript enabled.  Mobile and tablet ready.
-                </p>
-            </div>
-        </div>
-    </body>
+    <div id="footer">
+        <p>
+            Click headings to show/hide sections.
+        </p>
+        <p>
+            Requires recent HTML5 browser with javascript enabled. Mobile and tablet ready.
+        </p>
+    </div>
+</div>
+</body>
 
 </html>

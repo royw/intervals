@@ -1,13 +1,37 @@
 var modes = {
-    "Acoustic scale": {
-        "intervals": ["1", "2", "3", "♯4", "5", "6", "♭7"],
-        "steps": ["W", "W", "W", "H", "W", "H", "W"]
+    "Ionian mode or major scale": {
+        "intervals": ["1", "2", "3", "4", "5", "6", "7"],
+        "steps": ["W", "W", "H", "W", "W", "W", "H"]
+    },
+    "Dorian mode": {
+        "intervals": ["1", "2", "♭3", "4", "5", "6", "♭7"],
+        "steps": ["W", "H", "W", "W", "W", "H", "W"]
+    },
+    "Phrygian mode": {
+        "intervals": ["1", "♭2", "♭3", "4", "5", "♭6", "♭7", "1"],
+        "steps": ["H", "W", "W", "W", "H", "W", "W"]
+    },
+    "Lydian mode": {
+        "intervals": ["1", "2", "3", "♯4", "5", "6", "7"],
+        "steps": ["W", "W", "W", "H", "W", "W", "H"]
+    },
+    "Mixolydian mode or Adonai malakh mode": {
+        "intervals": ["1", "2", "3", "4", "5", "6", "♭7"],
+        "steps": ["W", "W", "H", "W", "W", "H", "W"]
     },
     "Aeolian mode or natural minor scale": {
         "intervals": ["1", "2", "♭3", "4", "5", "♭6", "♭7"],
         "steps": ["W", "H", "W", "W", "H", "W", "W"]
     },
+    "Locrian mode": {
+        "intervals": ["1", "♭2", "♭3", "4", "♭5", "♭6", "♭7"],
+        "steps": ["H", "W", "W", "H", "W", "W", "W"]
+    },
 
+    "Acoustic scale": {
+        "intervals": ["1", "2", "3", "♯4", "5", "6", "♭7"],
+        "steps": ["W", "W", "W", "H", "W", "H", "W"]
+    },
     "Algerian scale": {
         "intervals": ["1", "2", "♭3", "♯4", "5", "♭6", "7"],
         "steps": ["W", "H", "3H", "H", "H", "3H", "H", "W", "H", "W"]
@@ -31,10 +55,6 @@ var modes = {
     "Chromatic scale": {
         "intervals": ["1", "♯1", "2", "♯2", "3", "4", "♯4", "5", "♯5", "6", "♯6", "7"],
         "steps": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
-    },
-    "Dorian mode": {
-        "intervals": ["1", "2", "♭3", "4", "5", "6", "♭7"],
-        "steps": ["W", "H", "W", "W", "W", "H", "W"]
     },
     "Double harmonic scale": {
         "intervals": ["1", "♭2", "3", "4", "5", "♭6", "7"],
@@ -84,10 +104,6 @@ var modes = {
         "intervals": ["1", "♭2", "4", "5", "♭7"],
         "steps": ["H", "2W", "W", "2W", "W"]
     },
-    "Ionian mode or major scale": {
-        "intervals": ["1", "2", "3", "4", "5", "6", "7"],
-        "steps": ["W", "W", "H", "W", "W", "W", "H"]
-    },
     "Istrian scale": {
         "intervals": ["1", "♭2", "♭3", "♭4", "♭5", "5"],
         "steps": ["H", "W", "H", "W", ""]
@@ -96,17 +112,9 @@ var modes = {
         "intervals": ["1", "♭2", "4", "♭5", "♭7"],
         "steps": ["H", "2W", "H", "2W", "W"]
     },
-    "Locrian mode": {
-        "intervals": ["1", "♭2", "♭3", "4", "♭5", "♭6", "♭7"],
-        "steps": ["H", "W", "W", "H", "W", "W", "W"]
-    },
     "Lydian augmented scale": {
         "intervals": ["1", "2", "3", "♯4", "♯5", "6", "7"],
         "steps": ["W", "W", "W", "W", "H", "W", "H"]
-    },
-    "Lydian mode": {
-        "intervals": ["1", "2", "3", "♯4", "5", "6", "7"],
-        "steps": ["W", "W", "W", "H", "W", "W", "H"]
     },
     "Major bebop scale": {
         "intervals": ["1", "2", "3", "4", "5", "(♯5/♭6)", "6", "7"],
@@ -127,10 +135,6 @@ var modes = {
     "Minor pentatonic scale": {
         "intervals": ["1", "♭3", "4", "5", "♭7"],
         "steps": ["3H", "W", "W", "3H", "W"]
-    },
-    "Mixolydian mode or Adonai malakh mode": {
-        "intervals": ["1", "2", "3", "4", "5", "6", "♭7"],
-        "steps": ["W", "W", "H", "W", "W", "H", "W"]
     },
     "Neapolitan major scale": {
         "intervals": ["1", "♭2", "♭3", "4", "5", "6", "7"],
