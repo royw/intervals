@@ -14,6 +14,31 @@
 
         let data_prefix = "fretboard.intervals.";
 
+        /*
+         * from https://stackoverflow.com/questions/34899911/html5-canvas-auto-font-size-for-drawn-wrapped-rotated-text
+         */
+        function scale2FitCurrentFont(ctx, text, width, height) {
+            let points;
+            points = Number(ctx.font.split("px")[0]); // get current point size
+            points += points * 0.2; // As point size does not include hanging tails and
+                                    // other top and bottom extras add 20% to the height
+                                    // to accommodate the extra bits
+            let fontWidth = ctx.measureText(text).width;
+            // get the max scale that will allow the text to fi the current font
+            return Math.min(width / fontWidth, height / points);
+        }
+
+        /*
+         * from: https://medium.com/@josephcardillo/how-to-reverse-arrays-in-javascript-without-using-reverse-ae995904efbe
+         */
+        function reverseArray(arr) {
+            let newArray = [];
+            for (let i = arr.length - 1; i >= 0; i--) {
+                newArray.push(arr[i]);
+            }
+            return newArray;
+        }
+
         function numberOfFrets() {
             let number_of_frets_elem = document.getElementById("Number of frets");
             return parseInt(number_of_frets_elem.options[number_of_frets_elem.selectedIndex].text);
@@ -32,6 +57,71 @@
             let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
             let parts = tuning_str.split(" - ");
             return parts[1].split(",");
+        }
+
+        /*
+         *  note is a string containing in any order the natural note (A-G) and
+         *  optionally one or more accidentals (flats or sharps), and an optional
+         *  octave integer.
+         *  The semitone is calculated with C-A mapping to 1-12.
+         *  Accidentals then adjust appropriately: ♭ -1, ♯ +1, ♮ 0
+         *  If an octave is given, the 12 times the octave will be added to the
+         *  returned semitone.
+         *
+         * C0 = 0
+         * D0 = 2
+         * E0 = 4
+         * F0 = 5
+         * G0 = 7
+         * A0 = 9
+         * B0 = 11
+         * C1 = 12
+         * D1 = 14
+         * E1 = 16
+         * F1 = 17
+         * G1 = 19
+         * A1 = 21
+         * B1 = 23
+         * C2 = 24
+         * D2 = 26
+         *
+         *  "C D EF G A B "
+         * 0x0123456789abc
+         */
+        function semiToneFromNote(note) {
+            let baseNote = note.toUpperCase().replace(/[^A-G]/g, "");
+            let octave = parseInt(note.replace(/\D/g, ""));
+            let nFlats = (note.match(/♭/g) || []).length;
+            let nSharps = (note.match(/♯/g) || []).length;
+            let nNaturals = (note.match(/♮/g) || []).length;
+            let semitones = "C D EF G A B ".indexOf(baseNote);
+            return semitones + (12 * octave) + nSharps - nFlats;
+        }
+
+        function noteFromSemiTone(semitone) {
+            let octave = Math.floor(semitone / 12);
+            let note = ["C", "C♭/D♯", "D", "D♭/E♯", "E", "F", "F♭/G♯", "G", "G♭/A♯", "A", "A♭/B♯", "B"][semitone % 12];
+            return note + octave.toString();
+        }
+
+        function semiTonesForString(stringIndex, open_semitone) {
+            let semiTonesPerString = Array(numberOfFrets() + 1);
+            for (let fret = 0; fret <= numberOfFrets(); fret += 1) {
+                semiTonesPerString[fret] = open_semitone + fret;
+            }
+            console.log("semiTonesPerString = " + semiTonesPerString.toString());
+            return semiTonesPerString;
+        }
+
+        function semiTonesByStrings() {
+            let string_semitones = Array(numberOfStrings());   /* 2 dimensional array [string][fret] => semitone */
+            let tuning_notes = reverseArray(tuning());
+            for (let stringIndex = 0; stringIndex < numberOfStrings(); stringIndex += 1) {
+                let open_note = tuning_notes[stringIndex]
+                let open_semitone = semiToneFromNote(open_note);
+                string_semitones[stringIndex] = semiTonesForString(stringIndex, open_semitone);
+            }
+            return string_semitones;
         }
 
         function fretBoardSize(canvas_elem) {
@@ -61,7 +151,9 @@
             let tuning_notes = tuning();
 
             let context = canvas_elem.getContext("2d");
-            context.font = "20px Arial"
+            context.font = "20px Arial";
+            let fontScale = scale2FitCurrentFont(context, "DDDDDD", x_increment - 4, y_increment - 4);
+            context.font = (20 * fontScale).toString() + "px Arial";
 
             // draw fretboard outline
             context.beginPath();
@@ -75,7 +167,6 @@
             context.stroke();
 
             // vertical lines
-            let fret_number = 0
             for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
                 let x = (fret * x_increment) + fretBoardXOrigin;
                 context.beginPath();
@@ -112,6 +203,22 @@
                 context.stroke();
             }
 
+            /* label each note for each string and each fret */
+            let string_semitones = semiTonesByStrings();
+            for (let string = 1; string <= numberOfStrings(); string += 1) {
+                let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin - 2;
+                for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
+                    let x = (fret * x_increment) + fretBoardXOrigin - x_increment / 2;
+                    let semitone = string_semitones[string - 1][fret];
+                    let note = noteFromSemiTone(semitone);
+                    context.beginPath();
+                    context.textAlign = "center";
+                    context.fillStyle = "black";
+                    context.textBaseline = "bottom";
+                    context.fillText(note, x, y);
+                    context.stroke();
+                }
+            }
         }
 
         function addFretBoard() {
