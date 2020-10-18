@@ -59,6 +59,99 @@
             return parts[1].split(",");
         }
 
+        function key() {
+            let key_elem = document.getElementById("Key");
+            return key_elem.options[key_elem.selectedIndex].text;
+        }
+
+        function interval() {
+            let interval_elem = document.getElementById("Interval");
+            return interval_elem.selectedIndex + 1;
+        }
+
+        function intervalSemiTones() {
+            /* TODO implement */
+            return 0;
+        }
+
+        function mode() {
+            let mode_elem = document.getElementById("Mode");
+            return mode_elem.options[mode_elem.selectedIndex].text;
+        }
+
+        function modeName() {
+            let modeString = mode();
+            return modeString.split(" - ")[0];
+        }
+
+        /* returns Array of mode intervals (ex: [1, 2, 3, 4, 5, 6, 7]) */
+        function modeIntervals() {
+            let modeString = mode();
+            return modeString.split(" - ")[1].split(",");
+        }
+
+        /* returns Array of semitones between mode intervals (ex: [ 2, 1, 2, 2, 2, 1, 2]) */
+        function modeSteps() {
+            let modeString = mode();
+            let steps = modeString.split(" - ")[2].split(",");  /* W,H,W,W,W,HW */
+            let semitones = Array(steps.length);
+            for (let i = 0; i < steps.length; i += 1) {
+                let step = steps[i].toUpperCase().replace(/[^HW]/g, "").trim();
+                semitones[i] = 0;
+                if (step === "H") {
+                    semitones[i] = 1;
+                } else if (step === "W") {
+                    semitones[i] = 2;
+                }
+                let multiplier = parseInt(steps[i].replace(/\D/g, ""));
+                if (multiplier > 0) {
+                    semitones[i] *= multiplier;
+                }
+            }
+            return semitones;
+        }
+
+        function modeStepTones() {
+            let x = 0;
+            let mode_steps = modeSteps();   /* [2, 2, 1, 2, 2, 2, 1] */
+            /* desired: [0, 2, 4, 5, 7, 9, 11, 12] */
+            let steps = Array(mode_steps.length + 1);
+            steps[0] = 0;
+            for (let i = 0; i < mode_steps.length; i += 1) {
+                steps[i + 1] = steps[i] + mode_steps[i];
+            }
+            return steps;
+        }
+
+        /*
+         * map a semitone to an interval using key, Interval, and mode.
+         * return the integer greater than 0 interval, else return 0;
+         */
+        function intervalFromSemitone(semitone) {
+            /*
+             *  normalize (remove the octave) the semitone
+             *  Combine the key and Interval with the mode steps.
+             *  If the given semitone matches the combined interval,
+             *  return the interval number, else return 0
+             */
+            let normalized_semitone = semitone % 12;
+            let mode_semitones = modeStepTones();  /* Array of semitones, ex: [0, 2, 3, 5, 7, 9, 10, 12] */
+            let interval_semitone = intervalSemiTones();
+            let root_semitone = semiToneFromNote(key());
+            let combined_steps = Array(mode_semitones.length * 2);
+            for (let i = 0; i < mode_semitones.length; i += 1) {
+                combined_steps[i] = mode_semitones[i] + root_semitone + interval_semitone;
+                combined_steps[i + 12] = combined_steps[i]
+            }
+            if(combined_steps.indexOf(normalized_semitone) >= 0) {
+                return combined_steps.indexOf(normalized_semitone) + 1;
+            }
+            if(combined_steps.indexOf(normalized_semitone + 12) >= 0) {
+                return combined_steps.indexOf(normalized_semitone + 12) + 1;
+            }
+            return 0;
+        }
+
         /*
          *  note is a string containing in any order the natural note (A-G) and
          *  optionally one or more accidentals (flats or sharps), and an optional
@@ -90,7 +183,7 @@
          */
         function semiToneFromNote(note) {
             let baseNote = note.toUpperCase().replace(/[^A-G]/g, "");
-            let octave = parseInt(note.replace(/\D/g, ""));
+            let octave = parseInt(note.replace(/\D/g, "")) || 0;
             let nFlats = (note.match(/♭/g) || []).length;
             let nSharps = (note.match(/♯/g) || []).length;
             let nNaturals = (note.match(/♮/g) || []).length;
@@ -213,10 +306,28 @@
                     let note = noteFromSemiTone(semitone);
                     context.beginPath();
                     context.textAlign = "center";
-                    context.fillStyle = "black";
+                    context.fillStyle = "white";
                     context.textBaseline = "bottom";
                     context.fillText(note, x, y);
                     context.stroke();
+                }
+            }
+
+            /* draw interval number */
+            for (let string = 1; string <= numberOfStrings(); string += 1) {
+                let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin - 2;
+                for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
+                    let x = (fret * x_increment) + fretBoardXOrigin - x_increment / 2;
+                    let semitone = string_semitones[string - 1][fret];
+                    let interval = intervalFromSemitone(semitone);
+                    if (interval > 0) {
+                        context.beginPath();
+                        context.textAlign = "center";
+                        context.fillStyle = "cyan";
+                        context.textBaseline = "top";
+                        context.fillText(interval.toString(), x, y + 6);
+                        context.stroke();
+                    }
                 }
             }
         }

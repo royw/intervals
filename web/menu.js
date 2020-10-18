@@ -19,11 +19,11 @@ var menu_data = [
         "default": "C",
         "values": keys_data
     },
-    {
-        "label": "Interval",
-        "default": "I",
-        "values": interval_data
-    },
+    // {
+    //     "label": "Interval",
+    //     "default": "I",
+    //     "values": interval_data
+    // },
     {
         "label": "Mode",
         "default": "Ionian mode or major scale",
