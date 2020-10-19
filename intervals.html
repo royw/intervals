@@ -308,7 +308,7 @@
                     context.textAlign = "center";
                     context.fillStyle = "white";
                     context.textBaseline = "bottom";
-                    context.fillText(note, x, y);
+                    context.fillText(note.toUpperCase().replace(/\d/g, ""), x, y);
                     context.stroke();
                 }
             }
@@ -326,6 +326,10 @@
                         context.fillStyle = "cyan";
                         context.textBaseline = "top";
                         context.fillText(interval.toString(), x, y + 6);
+                        context.stroke();
+                        context.beginPath();
+                        context.strokeStyle = "cyan";
+                        context.arc(x, y, x_increment / 2.3 , 0, 2 * Math.PI);
                         context.stroke();
                     }
                 }
