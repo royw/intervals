@@ -88,7 +88,7 @@ var modes = {
         "intervals": ["1", "3", "♯4", "5", "7"],
         "steps": ["2W", "W", "H", "2W", "H"]
     },
-    "Hungarian \"Gypsy\" scale/Hungarian minor scale": {
+    "Hungarian \"Gypsy\" / minor scale": {
         "intervals": ["1", "2", "♭3", "♯4", "5", "♭6", "7"],
         "steps": ["W", "H", "3H", "H", "H", "3H", "H"]
     },
@@ -115,10 +115,6 @@ var modes = {
     "Lydian augmented scale": {
         "intervals": ["1", "2", "3", "♯4", "♯5", "6", "7"],
         "steps": ["W", "W", "W", "W", "H", "W", "H"]
-    },
-    "Major bebop scale": {
-        "intervals": ["1", "2", "3", "4", "5", "(♯5/♭6)", "6", "7"],
-        "steps": ["W", "W", "H", "W", "(H", "H)", "W", "H"]
     },
     "Major Locrian scale": {
         "intervals": ["1", "2", "3", "4", "♭5", "♭6", "♭7"],
