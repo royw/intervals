@@ -64,30 +64,14 @@
             return key_elem.options[key_elem.selectedIndex].text;
         }
 
-        function interval() {
-            let interval_elem = document.getElementById("Interval");
-            return interval_elem.selectedIndex + 1;
-        }
-
         function intervalSemiTones() {
             /* TODO implement */
             return 0;
         }
 
         function mode() {
-            let mode_elem = document.getElementById("Mode");
+            let mode_elem = document.getElementById("Mode / Scale");
             return mode_elem.options[mode_elem.selectedIndex].text;
-        }
-
-        function modeName() {
-            let modeString = mode();
-            return modeString.split(" - ")[0];
-        }
-
-        /* returns Array of mode intervals (ex: [1, 2, 3, 4, 5, 6, 7]) */
-        function modeIntervals() {
-            let modeString = mode();
-            return modeString.split(" - ")[1].split(",");
         }
 
         /* returns Array of semitones between mode intervals (ex: [ 2, 1, 2, 2, 2, 1, 2]) */
@@ -112,7 +96,6 @@
         }
 
         function modeStepTones() {
-            let x = 0;
             let mode_steps = modeSteps();   /* [2, 2, 1, 2, 2, 2, 1] */
             /* desired: [0, 2, 4, 5, 7, 9, 11, 12] */
             let steps = Array(mode_steps.length + 1);
@@ -143,10 +126,10 @@
                 combined_steps[i] = mode_semitones[i] + root_semitone + interval_semitone;
                 combined_steps[i + 12] = combined_steps[i]
             }
-            if(combined_steps.indexOf(normalized_semitone) >= 0) {
+            if (combined_steps.indexOf(normalized_semitone) >= 0) {
                 return combined_steps.indexOf(normalized_semitone) + 1;
             }
-            if(combined_steps.indexOf(normalized_semitone + 12) >= 0) {
+            if (combined_steps.indexOf(normalized_semitone + 12) >= 0) {
                 return combined_steps.indexOf(normalized_semitone + 12) + 1;
             }
             return 0;
@@ -217,11 +200,11 @@
             return string_semitones;
         }
 
-        function fretBoardSize(canvas_elem) {
+        function fretBoardSize() {
             let canvasWidth = window.innerWidth;
             let canvasHeight = window.innerHeight;
 
-            let x_increment = canvasWidth / (numberOfFrets() + 3);
+            let x_increment = canvasWidth / (numberOfFrets() + 2);
             let y_increment = canvasHeight / (numberOfStrings() + 1);
 
             if (y_increment > x_increment) {
@@ -238,15 +221,18 @@
         }
 
         function drawFretBoard(canvas_elem) {
-            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
             let fretBoardXOrigin = x_increment;
             let fretBoardYOrigin = 0;
             let tuning_notes = tuning();
 
             let context = canvas_elem.getContext("2d");
             context.font = "20px Arial";
+            // noinspection SpellCheckingInspection
             let fontScale = scale2FitCurrentFont(context, "DDDDDD", x_increment - 4, y_increment - 4);
-            context.font = (20 * fontScale).toString() + "px Arial";
+            let normal_font = (20 * fontScale).toString() + "px Arial";
+            let bold_font = "bold " + normal_font;
+            context.font = normal_font;
 
             // draw fretboard outline
             context.beginPath();
@@ -284,7 +270,7 @@
                 let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin;
                 context.beginPath();
                 context.moveTo(fretBoardXOrigin, y);
-                context.lineTo(fretBoardXOrigin + fretBoardWidth, y);
+                context.lineTo(fretBoardXOrigin + fretBoardWidth + x_increment / 4, y);
                 context.strokeStyle = "gold";
                 context.stroke();
                 context.beginPath();
@@ -325,13 +311,31 @@
                         context.textAlign = "center";
                         context.fillStyle = "cyan";
                         context.textBaseline = "top";
+                        context.font = bold_font;
                         context.fillText(interval.toString(), x, y + 6);
                         context.stroke();
                         context.beginPath();
                         context.strokeStyle = "cyan";
-                        context.arc(x, y, x_increment / 2.3 , 0, 2 * Math.PI);
+                        context.arc(x, y, x_increment / 2.3, 0, 2 * Math.PI);
                         context.stroke();
                     }
+                }
+            }
+            /* draw interval numbers for open strings */
+            for (let string = 1; string <= numberOfStrings(); string += 1) {
+                let fret = 0;
+                let y = (string * y_increment) - (y_increment / 2);
+                let x = (fret * x_increment) + fretBoardXOrigin - x_increment / 2;
+                let semitone = string_semitones[string - 1][fret];
+                let interval = intervalFromSemitone(semitone);
+                if (interval > 0) {
+                    context.beginPath();
+                    context.textAlign = "center";
+                    context.fillStyle = "cyan";
+                    context.textBaseline = "middle";
+                    context.font = bold_font;
+                    context.fillText(interval.toString(), x, y);
+                    context.stroke();
                 }
             }
         }
@@ -341,7 +345,7 @@
             let canvas_elem = document.createElement("canvas");
             canvas_elem.setAttribute("id", "canvas");
 
-            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
             canvas_elem.width = fretBoardWidth + (2 * x_increment);
             canvas_elem.height = fretBoardHeight + y_increment;
 
@@ -354,7 +358,7 @@
 
         function selectOptionByValue(select_elem, value) {
             for (let i = 0; i < select_elem.options.length; i++) {
-                if (select_elem.options[i].value == value) {
+                if (select_elem.options[i].value === value) {
                     select_elem.selectedIndex = i;
                     break;
                 }
@@ -416,14 +420,6 @@
         function addHeader(header_data) {
             let header_elem = document.getElementById("header");
 
-            let img_elem = document.createElement("img");
-            for (let attr in header_data["image"]) {
-                if (header_data["image"].hasOwnProperty(attr)) {
-                    img_elem.setAttribute(attr, header_data["image"][attr]);
-                }
-            }
-            header_elem.appendChild(img_elem);
-
             let h1_elem = document.createElement("h1");
             h1_elem.innerHTML = "<a href=\"#\">" + header_data["title"] + "</a>";
             header_elem.appendChild(h1_elem);
@@ -442,7 +438,7 @@
         function redraw() {
             let canvas_elem = document.getElementById("canvas");
 
-            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize(canvas_elem);
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
             canvas_elem.width = fretBoardWidth + (2 * x_increment);
             canvas_elem.height = fretBoardHeight + y_increment;
 

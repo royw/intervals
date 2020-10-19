@@ -25,7 +25,7 @@ var menu_data = [
     //     "values": interval_data
     // },
     {
-        "label": "Mode",
+        "label": "Mode / Scale",
         "default": "Ionian mode or major scale",
         "values": modes_data
     }

@@ -38,7 +38,7 @@ a:hover {
 /*}*/
 
 #header {
-    height: 90px;
+    height: 50px;
     background: darkseagreen; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(darkslategrey, deepskyblue); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(darkslategrey, deepskyblue); /* For Opera 11.1 to 12.0 */
