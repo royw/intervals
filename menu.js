@@ -7,11 +7,11 @@ var menu_data = [
     {
         "label": "Number of strings",
         "default": 6,
-        "values": [3, 4, 5, 6, 7, 8]
+        "values": string_data
     },
     {
         "label": "Tuning",
-        "default": "Standard",
+        "default": "6 - Standard",
         "values": tunings_data
     },
     {

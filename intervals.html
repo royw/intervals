@@ -56,7 +56,7 @@
             let tuning_elem = document.getElementById("Tuning");
             let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
             let parts = tuning_str.split(" - ");
-            return parts[1].split(",");
+            return parts[2].split(",");
         }
 
         function key() {
@@ -185,7 +185,6 @@
             for (let fret = 0; fret <= numberOfFrets(); fret += 1) {
                 semiTonesPerString[fret] = open_semitone + fret;
             }
-            console.log("semiTonesPerString = " + semiTonesPerString.toString());
             return semiTonesPerString;
         }
 
@@ -442,6 +441,41 @@
             canvas_elem.width = fretBoardWidth + (2 * x_increment);
             canvas_elem.height = fretBoardHeight + y_increment;
 
+            /* update tuning options based on number of strings */
+            let number_of_strings = numberOfStrings();
+            let tuning_elem = document.getElementById("Tuning");
+            let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
+            let tuning_number_of_strings = parseInt(tuning_str.split(' - ')[0]);
+            if (tuning_number_of_strings != number_of_strings) {
+                let length = tuning_elem.options.length;
+                for (i = length - 1; i >= 0; i--) {
+                    tuning_elem.options[i] = null;
+                }
+                for (let index in menu_data) {
+                    if (menu_data.hasOwnProperty(index)) {
+                        let item = menu_data[index];
+                        let label = item["label"];
+                        if (label === "Tuning") {
+                            let values = item["values"];
+                            for (let value in values) {
+                                if (values.hasOwnProperty(value)) {
+                                    let nStrings = parseInt(values[value].split(" - ")[0]);
+                                    if (nStrings === number_of_strings) {
+                                        let option_elem = document.createElement("option");
+                                        // let v = values[value].substring(values[value].indexOf(" - ") + 3);
+                                        let v = values[value];
+                                        option_elem.text = v;
+                                        option_elem.value = v;
+                                        tuning_elem.appendChild(option_elem);
+                                    }
+                                }
+                            }
+                            // let default_value = item["default"];
+                            // selectOptionByValue(tuning_elem, default_value);
+                        }
+                    }
+                }
+            }
             drawFretBoard(canvas_elem);
 
             /* save config to localstorage */
