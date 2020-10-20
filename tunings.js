@@ -36,9 +36,20 @@ var tunings = {
     "4 - Baritone Ukulele": ["D3", "G3", "B3", "E4"],
     "4 - Baritone Ukulele alt": ["C3", "G3", "B3", "E4"],
     "4 - Base Standard": ["B0", "E1", "A1", "D2"],
+    "4 - Base Standard alt": ["E0", "A0", "D1", "G1"],
+    "4 - Base Drop D": ["D0", "A0", "D1", "G1"],
+    "4 - Base Drop C": ["C0", "G1", "C2", "F2"],
+    "4 - Base Drop B": ["B0", "F#1", "B1", "E2"],
+    "6 - Base Standard": ["B0", "E1", "A1", "D2", "G2", "C3"],
     "5 - Standard": ["E2", "A2", "D3", "G3", "B3"],
     "5 - Base Standard": ["B0", "E1", "A1", "D2", "G2"],
-    "5 - Base Tenor": ["E1", "A1", "D2", "G2", "C3"]
+    "5 - Base Tenor": ["E1", "A1", "D2", "G2", "C3"],
+    "3 - Standard": ["G3", "D4", "G4"],
+    "3 - Standard alt:": ["E3", "B3", "E4"],
+    "3 - Open B:": ["F3#", "B3", "D4#"],
+    "3 - Guitar tuning:": ["G3", "B3", "E4"],
+    "3 - Open G:": ["G3", "B3", "D4"],
+    "3 - Fifths:": ["E3", "B3", "F4#"]
 };
 
 let tunings_data = [];
