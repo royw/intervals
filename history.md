@@ -1,4 +1,4 @@
-In the beginning, there was the 7 note chant,
+In the beginning, there was the Gregorian chant,
 
 ![do-re-mi-so-la-ti-do](images/Do-Re-Mi_(PSF).png)
 
