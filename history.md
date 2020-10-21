@@ -83,8 +83,8 @@ W-W-H-W-W-W-H.
 The advantage of numerical intervals is chords, licks, rifs, etc have the
 same number regardless of key.
 
-[^1]: https://musictheorytutoring.weebly.com/octave-identification.html#:~:text=The%20range%20of%20all%20possible,its%20name%20plus%20a%20number.
+[^1]: Octave Identification: https://musictheorytutoring.weebly.com/octave-identification.html#:~:text=The%20range%20of%20all%20possible,its%20name%20plus%20a%20number.
 [^2]: Music theory loves to have multiple meanings per word and multiple words per meaning.
-[^3]: https://en.wikipedia.org/wiki/Mode_(music)
-[^4]: https://en.wikipedia.org/wiki/Interval_(music)
-[^5]: https://bestbluesguitarlessonsonline.com/guitar-intervals
+[^3]: Modes: https://en.wikipedia.org/wiki/Mode_(music)
+[^4]: Interval: https://en.wikipedia.org/wiki/Interval_(music)
+[^5]: Guitar intervals: https://bestbluesguitarlessonsonline.com/guitar-intervals
