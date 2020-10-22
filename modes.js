@@ -56,17 +56,13 @@ var modes = {
         "intervals": ["1", "♯1", "2", "♯2", "3", "4", "♯4", "5", "♯5", "6", "♯6", "7"],
         "steps": ["H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"]
     },
-    "Double harmonic scale": {
+    "Double harmonic scale / Flamenco mode": {
         "intervals": ["1", "♭2", "3", "4", "5", "♭6", "7"],
         "steps": ["H", "3H", "H", "W", "H", "3H", "H"]
     },
     "Enigmatic scale": {
         "intervals": ["1", "♭2", "3", "♯4", "♯5", "♯6", "7"],
         "steps": ["H", "3H", "W", "W", "W", "H", "H"]
-    },
-    "Flamenco mode": {
-        "intervals": ["1", "♭2", "3", "4", "5", "♭6", "7"],
-        "steps": ["H", "3H", "H", "W", "H", "3H", "H"]
     },
     "\"Gypsy\" scale": {
         "intervals": ["1", "2", "♭3", "♯4", "5", "♭6", "♭7"],
