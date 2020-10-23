@@ -40,12 +40,12 @@
         }
 
         function numberOfFrets() {
-            let number_of_frets_elem = document.getElementById("Number of frets");
+            let number_of_frets_elem = document.getElementById("Frets");
             return parseInt(number_of_frets_elem.options[number_of_frets_elem.selectedIndex].text);
         }
 
         function numberOfStrings() {
-            let number_of_strings_elem = document.getElementById("Number of strings");
+            let number_of_strings_elem = document.getElementById("Strings");
             return parseInt(number_of_strings_elem.options[number_of_strings_elem.selectedIndex].text);
         }
 
@@ -176,7 +176,7 @@
 
         function noteFromSemiTone(semitone) {
             let octave = Math.floor(semitone / 12);
-            let note = ["C", "C♭/D♯", "D", "D♭/E♯", "E", "F", "F♭/G♯", "G", "G♭/A♯", "A", "A♭/B♯", "B"][semitone % 12];
+            let note = ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][semitone % 12];
             return note + octave.toString();
         }
 
@@ -272,6 +272,7 @@
                 context.lineTo(fretBoardXOrigin + fretBoardWidth + x_increment / 4, y);
                 context.strokeStyle = "gold";
                 context.stroke();
+                // draw the tuning for the string
                 context.beginPath();
                 context.textAlign = "right";
                 context.fillStyle = "black";
@@ -324,7 +325,7 @@
             for (let string = 1; string <= numberOfStrings(); string += 1) {
                 let fret = 0;
                 let y = (string * y_increment) - (y_increment / 2);
-                let x = (fret * x_increment) + fretBoardXOrigin - x_increment / 2;
+                let x = (fret * x_increment) + fretBoardXOrigin - x_increment * .6;
                 let semitone = string_semitones[string - 1][fret];
                 let interval = intervalFromSemitone(semitone);
                 if (interval > 0) {
@@ -362,6 +363,44 @@
                     break;
                 }
             }
+        }
+
+        function updateTuningOptions(force) {
+            let number_of_strings = numberOfStrings();
+            let tuning_elem = document.getElementById("Tuning");
+            let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
+            let tuning_number_of_strings = parseInt(tuning_str.split(' - ')[0]);
+            if (force || (tuning_number_of_strings != number_of_strings)) {
+                let length = tuning_elem.options.length;
+                for (i = length - 1; i >= 0; i--) {
+                    tuning_elem.options[i] = null;
+                }
+                for (let index in menu_data) {
+                    if (menu_data.hasOwnProperty(index)) {
+                        let item = menu_data[index];
+                        let label = item["label"];
+                        if (label === "Tuning") {
+                            let values = item["values"];
+                            for (let value in values) {
+                                if (values.hasOwnProperty(value)) {
+                                    let nStrings = parseInt(values[value].split(" - ")[0]);
+                                    if (nStrings === number_of_strings) {
+                                        let option_elem = document.createElement("option");
+                                        // let v = values[value].substring(values[value].indexOf(" - ") + 3);
+                                        let v = values[value];
+                                        option_elem.text = v;
+                                        option_elem.value = v;
+                                        tuning_elem.appendChild(option_elem);
+                                    }
+                                }
+                            }
+                            // let default_value = item["default"];
+                            // selectOptionByValue(tuning_elem, default_value);
+                        }
+                    }
+                }
+            }
+
         }
 
         /*
@@ -442,40 +481,7 @@
             canvas_elem.height = fretBoardHeight + y_increment;
 
             /* update tuning options based on number of strings */
-            let number_of_strings = numberOfStrings();
-            let tuning_elem = document.getElementById("Tuning");
-            let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
-            let tuning_number_of_strings = parseInt(tuning_str.split(' - ')[0]);
-            if (tuning_number_of_strings != number_of_strings) {
-                let length = tuning_elem.options.length;
-                for (i = length - 1; i >= 0; i--) {
-                    tuning_elem.options[i] = null;
-                }
-                for (let index in menu_data) {
-                    if (menu_data.hasOwnProperty(index)) {
-                        let item = menu_data[index];
-                        let label = item["label"];
-                        if (label === "Tuning") {
-                            let values = item["values"];
-                            for (let value in values) {
-                                if (values.hasOwnProperty(value)) {
-                                    let nStrings = parseInt(values[value].split(" - ")[0]);
-                                    if (nStrings === number_of_strings) {
-                                        let option_elem = document.createElement("option");
-                                        // let v = values[value].substring(values[value].indexOf(" - ") + 3);
-                                        let v = values[value];
-                                        option_elem.text = v;
-                                        option_elem.value = v;
-                                        tuning_elem.appendChild(option_elem);
-                                    }
-                                }
-                            }
-                            // let default_value = item["default"];
-                            // selectOptionByValue(tuning_elem, default_value);
-                        }
-                    }
-                }
-            }
+            updateTuningOptions(false);
             drawFretBoard(canvas_elem);
 
             /* save config to localstorage */
@@ -498,6 +504,7 @@
             addHeader(header_data);
             addMenu(menu_data);
             addFretBoard();
+            updateTuningOptions(true);
 
             let ro = new ResizeObserver(entries => {
                 for (let entry of entries) {

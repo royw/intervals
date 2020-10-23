@@ -1,12 +1,12 @@
 var menu_data = [
     {
-        "label": "Number of frets",
+        "label": "Frets",
         "default": 24,
         "values": [12, 24]
     },
     {
-        "label": "Number of strings",
-        "default": 6,
+        "label": "Strings",
+        "default": "6",
         "values": string_data
     },
     {

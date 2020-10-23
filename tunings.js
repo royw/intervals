@@ -1,6 +1,6 @@
 var tunings = {
     "6 - Standard": ["E2", "A2", "D3", "G3", "B3", "E4"],
-    "6 - Drop-D": ["D2", "A2", "D3", "G3", "B3", "E4"],
+    "6 - Drop D": ["D2", "A2", "D3", "G3", "B3", "E4"],
     "6 - Nashville": ["E3", "A3", "D4", "G4", "B3", "E4"],
     "6 - Open A (A,C♯,E)": ["E2", "A2", "C♯3", "E3", "A3", "E4"],
     "6 - Open A (A,C♯,E) Slide": ["E2", "A2", "E3", "A3", "C♯4", "E4"],
@@ -65,16 +65,19 @@ var tunings = {
     "7 - alt 6": ["A1", "D2", "G2", "C3", "F3", "A3", "D4"],
     "8 - Standard": ["F#1", "B1", "E2", "A2", "D3", "G3", "B3", "E4"],
     "8 - Drop E": ["E1", "B1", "E2", "A2", "D3", "G3", "B3", "E4"],
-    "8 - Galbraith": ["A1", "E2", "A2", "D3", "G3", "B3", "E4", "A4"]
+    "8 - Galbraith": ["A1", "E2", "A2", "D3", "G3", "B3", "E4", "A4"],
+//    "6 - Custom": ["E2", "A2", "D3", "G3", "B3", "E4"]
 };
 
 let tunings_data = [];
 for (let k in tunings) {
     let value = k;
-    value += " - ";
-    value += tunings[k];
-    tunings_data.push(value);
-};
+    if (tunings[k].length > 0) {
+        value += " - ";
+        value += tunings[k];
+        tunings_data.push(value);
+    }
+}
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
