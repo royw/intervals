@@ -13,6 +13,7 @@
     <script>
 
         let data_prefix = "fretboard.intervals.";
+        const SEMITONES_PER_OCTAVE = 12;
 
         /*
          * from https://stackoverflow.com/questions/34899911/html5-canvas-auto-font-size-for-drawn-wrapped-rotated-text
@@ -33,7 +34,7 @@
          */
         function reverseArray(arr) {
             let newArray = [];
-            for (let i = arr.length - 1; i >= 0; i--) {
+            for (let i = arr.length - 1; 0 <= i; i--) {
                 newArray.push(arr[i]);
             }
             return newArray;
@@ -82,13 +83,13 @@
             for (let i = 0; i < steps.length; i += 1) {
                 let step = steps[i].toUpperCase().replace(/[^HW]/g, "").trim();
                 semitones[i] = 0;
-                if (step === "H") {
+                if ("H" === step) {
                     semitones[i] = 1;
-                } else if (step === "W") {
+                } else if ("W" === step) {
                     semitones[i] = 2;
                 }
                 let multiplier = parseInt(steps[i].replace(/\D/g, ""));
-                if (multiplier > 0) {
+                if (0 < multiplier) {
                     semitones[i] *= multiplier;
                 }
             }
@@ -117,20 +118,20 @@
              *  If the given semitone matches the combined interval,
              *  return the interval number, else return 0
              */
-            let normalized_semitone = semitone % 12;
+            let normalized_semitone = semitone % SEMITONES_PER_OCTAVE;
             let mode_semitones = modeStepTones();  /* Array of semitones, ex: [0, 2, 3, 5, 7, 9, 10, 12] */
             let interval_semitone = intervalSemiTones();
             let root_semitone = semiToneFromNote(key());
             let combined_steps = Array(mode_semitones.length * 2);
             for (let i = 0; i < mode_semitones.length; i += 1) {
                 combined_steps[i] = mode_semitones[i] + root_semitone + interval_semitone;
-                combined_steps[i + 12] = combined_steps[i]
+                combined_steps[i + SEMITONES_PER_OCTAVE] = combined_steps[i]
             }
-            if (combined_steps.indexOf(normalized_semitone) >= 0) {
+            if (0 <= combined_steps.indexOf(normalized_semitone)) {
                 return combined_steps.indexOf(normalized_semitone) + 1;
             }
-            if (combined_steps.indexOf(normalized_semitone + 12) >= 0) {
-                return combined_steps.indexOf(normalized_semitone + 12) + 1;
+            if (0 <= combined_steps.indexOf(normalized_semitone + SEMITONES_PER_OCTAVE)) {
+                return combined_steps.indexOf(normalized_semitone + SEMITONES_PER_OCTAVE) + 1;
             }
             return 0;
         }
@@ -171,12 +172,12 @@
             let nSharps = (note.match(/♯/g) || []).length;
             let nNaturals = (note.match(/♮/g) || []).length;
             let semitones = "C D EF G A B ".indexOf(baseNote);
-            return semitones + (12 * octave) + nSharps - nFlats;
+            return semitones + (SEMITONES_PER_OCTAVE * octave) + nSharps - nFlats;
         }
 
         function noteFromSemiTone(semitone) {
-            let octave = Math.floor(semitone / 12);
-            let note = ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][semitone % 12];
+            let octave = Math.floor(semitone / SEMITONES_PER_OCTAVE);
+            let note = ["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"][semitone % SEMITONES_PER_OCTAVE];
             return note + octave.toString();
         }
 
@@ -192,7 +193,7 @@
             let string_semitones = Array(numberOfStrings());   /* 2 dimensional array [string][fret] => semitone */
             let tuning_notes = reverseArray(tuning());
             for (let stringIndex = 0; stringIndex < numberOfStrings(); stringIndex += 1) {
-                let open_note = tuning_notes[stringIndex]
+                let open_note = tuning_notes[stringIndex];
                 let open_semitone = semiToneFromNote(open_note);
                 string_semitones[stringIndex] = semiTonesForString(stringIndex, open_semitone);
             }
@@ -251,9 +252,9 @@
                 context.strokeStyle = "silver";
                 context.lineWidth = 3;
                 context.moveTo(x, fretBoardYOrigin);
-                context.lineTo(x, fretBoardYOrigin + fretBoardHeight)
+                context.lineTo(x, fretBoardYOrigin + fretBoardHeight);
                 context.stroke();
-                if (fret > 0) {
+                if (0 < fret) {
                     context.beginPath();
                     context.textAlign = "center";
                     context.fillStyle = "black";
@@ -306,7 +307,7 @@
                     let x = (fret * x_increment) + fretBoardXOrigin - x_increment / 2;
                     let semitone = string_semitones[string - 1][fret];
                     let interval = intervalFromSemitone(semitone);
-                    if (interval > 0) {
+                    if (0 < interval) {
                         context.beginPath();
                         context.textAlign = "center";
                         context.fillStyle = "cyan";
@@ -325,10 +326,10 @@
             for (let string = 1; string <= numberOfStrings(); string += 1) {
                 let fret = 0;
                 let y = (string * y_increment) - (y_increment / 2);
-                let x = (fret * x_increment) + fretBoardXOrigin - x_increment * .6;
+                let x = (fret * x_increment) + fretBoardXOrigin - x_increment * 0.6;
                 let semitone = string_semitones[string - 1][fret];
                 let interval = intervalFromSemitone(semitone);
-                if (interval > 0) {
+                if (0 < interval) {
                     context.beginPath();
                     context.textAlign = "center";
                     context.fillStyle = "cyan";
@@ -370,37 +371,32 @@
             let tuning_elem = document.getElementById("Tuning");
             let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
             let tuning_number_of_strings = parseInt(tuning_str.split(' - ')[0]);
-            if (force || (tuning_number_of_strings != number_of_strings)) {
-                let length = tuning_elem.options.length;
-                for (i = length - 1; i >= 0; i--) {
-                    tuning_elem.options[i] = null;
-                }
-                for (let index in menu_data) {
-                    if (menu_data.hasOwnProperty(index)) {
-                        let item = menu_data[index];
-                        let label = item["label"];
-                        if (label === "Tuning") {
-                            let values = item["values"];
-                            for (let value in values) {
-                                if (values.hasOwnProperty(value)) {
-                                    let nStrings = parseInt(values[value].split(" - ")[0]);
-                                    if (nStrings === number_of_strings) {
-                                        let option_elem = document.createElement("option");
-                                        // let v = values[value].substring(values[value].indexOf(" - ") + 3);
-                                        let v = values[value];
-                                        option_elem.text = v;
-                                        option_elem.value = v;
-                                        tuning_elem.appendChild(option_elem);
-                                    }
+            // let default_value;
+            for (let index in menu_data) {
+                if (menu_data.hasOwnProperty(index)) {
+                    let item = menu_data[index];
+                    let label = item["label"];
+                    if ("Tuning" === label) {
+                        let values = item["values"];
+                        let default_value = tuning_elem.options[tuning_elem.selectedIndex].text
+
+                        tuning_elem.innerHTML = "";     // remove all select options
+                        for (let value in values) {
+                            if (values.hasOwnProperty(value)) {
+                                let nStrings = parseInt(values[value].split(" - ")[0]);
+                                if (nStrings === number_of_strings) {
+                                    let option_elem = document.createElement("option");
+                                    let v = values[value];
+                                    option_elem.text = v;
+                                    option_elem.value = v;
+                                    tuning_elem.appendChild(option_elem);
                                 }
                             }
-                            // let default_value = item["default"];
-                            // selectOptionByValue(tuning_elem, default_value);
                         }
+                        selectOptionByValue(tuning_elem, default_value);
                     }
                 }
             }
-
         }
 
         /*
@@ -444,14 +440,14 @@
                     }
                     selectOptionByValue(select_elem, default_value);
 
-                    div_elem.appendChild(label_elem)
-                    div_elem.appendChild(select_elem)
+                    div_elem.appendChild(label_elem);
+                    div_elem.appendChild(select_elem);
 
                     item_elem.appendChild(div_elem);
                     list_elem.appendChild(item_elem);
                 }
             }
-            form_elem.appendChild(list_elem)
+            form_elem.appendChild(list_elem);
             menu_elem.appendChild(form_elem);
         }
 
