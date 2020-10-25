@@ -220,21 +220,29 @@
             return [canvasWidth - (2 * x_increment), canvasHeight - y_increment, x_increment, y_increment]
         }
 
-        function drawFretBoard(canvas_elem) {
+        function fretBoardOrigin() {
             let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
             let fretBoardXOrigin = x_increment;
             let fretBoardYOrigin = 0;
-            let tuning_notes = tuning();
+            return [fretBoardXOrigin, fretBoardYOrigin];
+        }
 
-            let context = canvas_elem.getContext("2d");
+        function fretBoardFonts(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let saved_font = context.font;
             context.font = "20px Arial";
             // noinspection SpellCheckingInspection
             let fontScale = scale2FitCurrentFont(context, "DDDDDD", x_increment - 4, y_increment - 4);
             let normal_font = (20 * fontScale).toString() + "px Arial";
             let bold_font = "bold " + normal_font;
-            context.font = normal_font;
+            context.font = saved_font;
+            return [normal_font, bold_font];
+        }
 
-            // draw fretboard outline
+        function drawFretBoardOutline(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+
             context.beginPath();
             context.fillStyle = "darkslategrey";
             context.strokeStyle = "black";
@@ -244,6 +252,11 @@
             context.rect(fretBoardXOrigin, fretBoardYOrigin,
                 fretBoardWidth, fretBoardHeight + fretBoardYOrigin);
             context.stroke();
+        }
+
+        function drawFrets(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
 
             // vertical lines
             for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
@@ -262,6 +275,12 @@
                     context.stroke();
                 }
             }
+        }
+
+        function drawStrings(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+            let tuning_notes = tuning();
 
             // horizontal lines
             context.lineWidth = 2;
@@ -282,9 +301,14 @@
                 context.fillText(tuning_notes[index], fretBoardXOrigin - 4, y);
                 context.stroke();
             }
+        }
+
+        function drawNotes(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+            let string_semitones = semiTonesByStrings();
 
             /* label each note for each string and each fret */
-            let string_semitones = semiTonesByStrings();
             for (let string = 1; string <= numberOfStrings(); string += 1) {
                 let y = (string * y_increment) - (y_increment / 2) + fretBoardYOrigin - 2;
                 for (let fret = 1; fret <= numberOfFrets(); fret += 1) {
@@ -299,6 +323,13 @@
                     context.stroke();
                 }
             }
+        }
+
+        function drawFrettedIntervalNumbers(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+            let string_semitones = semiTonesByStrings();
+            let [normal_font, bold_font] = fretBoardFonts(context);
 
             /* draw interval number */
             for (let string = 1; string <= numberOfStrings(); string += 1) {
@@ -316,7 +347,7 @@
                         context.fillText(interval.toString(), x, y + 6);
                         context.stroke();
                         context.beginPath();
-                        if (1 == interval) {
+                        if (1 === interval) {
                             context.strokeStyle = "yellow";
                         } else {
                             context.strokeStyle = "cyan";
@@ -326,6 +357,14 @@
                     }
                 }
             }
+        }
+
+        function drawOpenIntervalNumbers(context) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+            let string_semitones = semiTonesByStrings();
+            let [normal_font, bold_font] = fretBoardFonts(context);
+
             /* draw interval numbers for open strings */
             for (let string = 1; string <= numberOfStrings(); string += 1) {
                 let fret = 0;
@@ -343,6 +382,23 @@
                     context.stroke();
                 }
             }
+        }
+
+        function drawFretBoard(canvas_elem) {
+            let [fretBoardWidth, fretBoardHeight, x_increment, y_increment] = fretBoardSize();
+            let [fretBoardXOrigin, fretBoardYOrigin] = fretBoardOrigin();
+
+            let context = canvas_elem.getContext("2d");
+            let [normal_font, bold_font] = fretBoardFonts(context);
+            context.font = normal_font;
+
+            // draw fretboard outline
+            drawFretBoardOutline(context);
+            drawFrets(context);
+            drawStrings(context);
+            drawNotes(context);
+            drawFrettedIntervalNumbers(context);
+            drawOpenIntervalNumbers(context);
         }
 
         function addFretBoard() {
