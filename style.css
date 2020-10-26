@@ -78,18 +78,16 @@ a:hover {
 }
 
 #menu {
-    height: 30px;
-    line-height: 30px;
-    background: deepskyblue; /* For browsers that do not support gradients */
-    /*background: -webkit-linear-gradient(darkslategrey, deepskyblue); !* For Safari 5.1 to 6.0 *!*/
-    /*background: -o-linear-gradient(darkslategrey, deepskyblue); !* For Opera 11.1 to 12.0 *!*/
-    /*background: -moz-linear-gradient(darkslategrey, deepskyblue); !* For Firefox 3.6 to 15 *!*/
-    /*background: linear-gradient(darkslategrey, deepskyblue); !* Standard syntax *!*/
+    display: block;
+}
+
+#menu div {
+    float: left;
 }
 
 #menu ul {
     list-style-type: none;
-    padding-left: 30px;
+    padding-left: 20px;
 }
 
 #menu ul li {
@@ -97,24 +95,11 @@ a:hover {
     float: left;
 }
 
-#menu ul li a {
-    padding: 0 20px 0 0;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    color: #333;
-}
-
-#menu ul li a:hover {
-    color: #aaa;
-    text-decoration: none;
-}
-
 #menu ul li div {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    padding: 15px;
+    padding: 10px;
 }
 
 #menu ul li div label {

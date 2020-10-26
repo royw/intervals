@@ -50,6 +50,18 @@
             return parseInt(number_of_strings_elem.options[number_of_strings_elem.selectedIndex].text);
         }
 
+        function customTuning() {
+            let number_of_strings = numberOfStrings();
+
+            let tunings = [];
+            for (let string = number_of_strings; string >= 1; string -= 1) {
+                let string_elem = document.getElementById("String " + string.toString());
+                let pitch = string_elem.options[string_elem.selectedIndex].text;
+                tunings.push(pitch);
+            }
+            return tunings;
+        }
+
         /*
          * return an array of notes as strings
          */
@@ -57,7 +69,25 @@
             let tuning_elem = document.getElementById("Tuning");
             let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
             let parts = tuning_str.split(" - ");
+            if (isCustomTuning()) {
+                return customTuning();
+            }
             return parts[2].split(",");
+        }
+
+        function removeOctave(note) {
+            return note.replace(/[0-9]/g, '');
+        }
+
+        function tuningNoOctave() {
+            return tuning().map(removeOctave)
+        }
+
+        function isCustomTuning() {
+            let tuning_elem = document.getElementById("Tuning");
+            let tuning_str = tuning_elem.options[tuning_elem.selectedIndex].text;
+            let parts = tuning_str.split(" - ");
+            return parts[1] === "Custom";
         }
 
         function key() {
@@ -214,7 +244,7 @@
 
             if (x_increment > y_increment) {
                 x_increment = y_increment;
-                canvasWidth = x_increment * (numberOfFrets() + 2);
+                canvasWidth = x_increment * (numberOfFrets() + 1.5);
             }
 
             return [canvasWidth - (2 * x_increment), canvasHeight - y_increment, x_increment, y_increment]
@@ -434,26 +464,52 @@
             // let default_value;
             for (let index in menu_data) {
                 if (menu_data.hasOwnProperty(index)) {
-                    let item = menu_data[index];
-                    let label = item["label"];
-                    if ("Tuning" === label) {
-                        let values = item["values"];
-                        let default_value = tuning_elem.options[tuning_elem.selectedIndex].text
+                    let div_data = menu_data[index];
+                    let content = div_data["contains"];
+                    for (let content_index in content) {
+                        if (content.hasOwnProperty(content_index)) {
+                            let item = content[content_index];
 
-                        tuning_elem.innerHTML = "";     // remove all select options
-                        for (let value in values) {
-                            if (values.hasOwnProperty(value)) {
-                                let nStrings = parseInt(values[value].split(" - ")[0]);
-                                if (nStrings === number_of_strings) {
-                                    let option_elem = document.createElement("option");
-                                    let v = values[value];
-                                    option_elem.text = v;
-                                    option_elem.value = v;
-                                    tuning_elem.appendChild(option_elem);
+                            let label = item["label"];
+                            if ("Tuning" === label) {
+                                let values = item["values"];
+                                let default_value = tuning_elem.options[tuning_elem.selectedIndex].text
+
+                                tuning_elem.innerHTML = "";     // remove all select options
+                                for (let value in values) {
+                                    if (values.hasOwnProperty(value)) {
+                                        let nStrings = parseInt(values[value].split(" - ")[0]);
+                                        if (nStrings === number_of_strings) {
+                                            let option_elem = document.createElement("option");
+                                            let v = values[value];
+                                            option_elem.text = v;
+                                            option_elem.value = v;
+                                            tuning_elem.appendChild(option_elem);
+                                        }
+                                    }
+                                }
+                                selectOptionByValue(tuning_elem, default_value);
+                                let max_strings = 8;
+                                for (let string = 1; string <= max_strings; string += 1) {
+                                    let label_elem = document.getElementById("label: String " + string.toString());
+                                    let string_elem = document.getElementById("String " + string.toString());
+                                    if (string <= number_of_strings && isCustomTuning()) {
+                                        label_elem.style.display = "block";
+                                        string_elem.style.display = "block";
+                                    } else {
+                                        label_elem.style.display = "none";
+                                        string_elem.style.display = "none";
+                                    }
+                                }
+                                tunings = tuningNoOctave();
+                                for (let string = 1; string <= max_strings; string += 1) {
+                                    let string_elem = document.getElementById("String " + string.toString());
+                                    if (string <= number_of_strings && isCustomTuning()) {
+                                        selectOptionByValue(string_elem, tunings[number_of_strings - string]);
+                                    }
                                 }
                             }
                         }
-                        selectOptionByValue(tuning_elem, default_value);
                     }
                 }
             }
@@ -467,47 +523,58 @@
         function addMenu(menu_data) {
             let menu_elem = document.getElementById("menu");
             let form_elem = document.createElement("form");
-            let list_elem = document.createElement("ul");
             for (let index in menu_data) {
                 if (menu_data.hasOwnProperty(index)) {
-                    let item = menu_data[index];
-                    let label = item["label"];
-                    let default_value;
-                    if (localStorage.hasOwnProperty(data_prefix + label)) {
-                        default_value = localStorage.getItem(data_prefix + label);
-                    } else {
-                        default_value = item["default"];
-                    }
-                    let values = item["values"];
+                    let div_data = menu_data[index];
+                    let menu_div_elem = document.createElement("div");
+                    menu_div_elem.id = div_data["id"];
+                    let list_elem = document.createElement("ul");
+                    let content = div_data["contains"];
+                    for (let content_index in content) {
+                        if (content.hasOwnProperty(content_index)) {
+                            let item = content[content_index];
+                            let label = item["label"];
+                            let default_value;
+                            if (localStorage.hasOwnProperty(data_prefix + label)) {
+                                default_value = localStorage.getItem(data_prefix + label);
+                            } else {
+                                default_value = item["default"];
+                            }
+                            let values = item["values"];
 
-                    let item_elem = document.createElement("li");
+                            let item_elem = document.createElement("li");
 
-                    let div_elem = document.createElement("div");
-                    let label_elem = document.createElement("label");
-                    label_elem.innerText = label;
+                            let div_elem = document.createElement("div");
+                            let label_elem = document.createElement("label");
+                            label_elem.name = "label: " + label;
+                            label_elem.id = "label: " + label;
+                            label_elem.innerText = label;
 
-                    let select_elem = document.createElement("select");
-                    select_elem.name = label;
-                    select_elem.id = label;
-                    select_elem.addEventListener("change", redraw);
-                    for (let value in values) {
-                        if (values.hasOwnProperty(value)) {
-                            let option_elem = document.createElement("option");
-                            option_elem.text = values[value];
-                            option_elem.value = values[value];
-                            select_elem.appendChild(option_elem);
+                            let select_elem = document.createElement("select");
+                            select_elem.name = label;
+                            select_elem.id = label;
+                            select_elem.addEventListener("change", redraw);
+                            for (let value in values) {
+                                if (values.hasOwnProperty(value)) {
+                                    let option_elem = document.createElement("option");
+                                    option_elem.text = values[value];
+                                    option_elem.value = values[value];
+                                    select_elem.appendChild(option_elem);
+                                }
+                            }
+                            selectOptionByValue(select_elem, default_value);
+
+                            div_elem.appendChild(label_elem);
+                            div_elem.appendChild(select_elem);
+
+                            item_elem.appendChild(div_elem);
+                            list_elem.appendChild(item_elem);
                         }
                     }
-                    selectOptionByValue(select_elem, default_value);
-
-                    div_elem.appendChild(label_elem);
-                    div_elem.appendChild(select_elem);
-
-                    item_elem.appendChild(div_elem);
-                    list_elem.appendChild(item_elem);
+                    menu_div_elem.appendChild(list_elem);
+                    form_elem.appendChild(menu_div_elem);
                 }
             }
-            form_elem.appendChild(list_elem);
             menu_elem.appendChild(form_elem);
         }
 
@@ -543,11 +610,18 @@
             /* save config to localstorage */
             for (let index in menu_data) {
                 if (menu_data.hasOwnProperty(index)) {
-                    let item = menu_data[index];
-                    let label = item["label"];
-                    let elem = document.getElementById(label);
-                    let value = elem.options[elem.selectedIndex].text;
-                    localStorage.setItem(data_prefix + label, value);
+                    let div_data = menu_data[index];
+                    let content = div_data["contains"];
+                    for (let content_index in content) {
+                        if (content.hasOwnProperty(content_index)) {
+                            let item = content[content_index];
+
+                            let label = item["label"];
+                            let elem = document.getElementById(label);
+                            let value = elem.options[elem.selectedIndex].text;
+                            localStorage.setItem(data_prefix + label, value);
+                        }
+                    }
                 }
             }
         }
